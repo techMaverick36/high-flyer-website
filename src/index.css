@@ -1,0 +1,84 @@
+@import "tailwindcss";
+
+@theme {
+  --font-display: "Clash Display", sans-serif;
+  --font-body: "Sora", sans-serif;
+
+  --color-brand-teal: #0891b2;
+  --color-brand-orange: #f97316;
+
+  /* Warm off-white instead of cool slate — feels more premium & human */
+  --color-background: #fafaf8;
+  /* Charcoal instead of near-black — softer, more readable */
+  --color-text-main: #2d3748;
+
+  /* Neutral shadows — no brand-tint bleed on every card */
+  --shadow-card: 0 1px 8px rgba(0, 0, 0, 0.06), 0 2px 4px rgba(0, 0, 0, 0.04);
+  --shadow-card-hover: 0 4px 20px rgba(0, 0, 0, 0.10), 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+@layer base {
+  html {
+    @apply antialiased;
+  }
+
+  body {
+    @apply bg-background text-text-main font-body text-[15px] md:text-[16px] leading-[1.7];
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-display font-semibold;
+  }
+}
+
+@layer components {
+  .section-container {
+    @apply max-w-[1280px] mx-auto px-5 md:px-8;
+  }
+
+  /* Slight asymmetry — more bottom than top — feels intentional */
+  .section-padding {
+    @apply pt-16 pb-20 md:pt-20 md:pb-28;
+  }
+
+  /* Section text hierarchy */
+  .section-title {
+    @apply font-display font-bold text-slate-900 text-3xl md:text-[2.5rem] leading-[1.15] mb-4;
+  }
+
+  .section-subtitle {
+    @apply text-slate-500 text-base md:text-lg leading-relaxed max-w-2xl;
+  }
+
+  /* Buttons — slightly less rounded, more mature */
+  .btn {
+    @apply rounded-lg font-semibold transition-all duration-200 inline-flex items-center justify-center;
+  }
+
+  .btn-primary {
+    @apply bg-brand-teal text-white hover:bg-teal-700;
+  }
+
+  .btn-orange {
+    @apply bg-brand-orange text-white hover:bg-orange-600;
+  }
+
+  .input-field {
+    @apply rounded-lg border border-slate-200 px-4 py-2.5 focus:ring-2 focus:ring-brand-teal/25 focus:border-brand-teal outline-none transition-all duration-200;
+  }
+
+  /* Cards — softer radius, neutral shadow */
+  .card {
+    @apply rounded-xl border border-slate-100/80 bg-white shadow-card transition-all duration-200;
+  }
+
+  /* Hover — subtle lift, no dramatic jump */
+  .card-hover {
+    @apply hover:-translate-y-0.5 hover:shadow-card-hover;
+  }
+
+  /* Section label — orange accent, used sparingly */
+  .section-label {
+    @apply text-brand-orange font-semibold text-xs uppercase tracking-[0.12em] mb-3 block;
+  }
+}
