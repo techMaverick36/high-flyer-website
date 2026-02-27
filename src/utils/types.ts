@@ -28,6 +28,11 @@ export type ProductCategory =
   | 'water-dispensers'
   | 'blenders'
   | 'fans'
+  | 'cookers'
+  | 'air-fryers'
+  | 'rice-cookers'
+  | 'small-appliances'
+  | 'extension-cords'
 
 // ─── Cart ──────────────────────────────────────────────────
 export interface CartItem {

@@ -8,15 +8,19 @@ export default function AboutPage() {
   return (
     <div className="pt-[112px]">
       {/* Hero */}
-      <section className="relative bg-gradient-to-br from-[#0f172a] via-[#0891b2] to-brand-teal py-20 md:py-32 overflow-hidden">
-        <div className="absolute inset-0 opacity-10" style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg width='20' height='20' viewBox='0 0 20 20' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23ffffff' fill-opacity='1' fill-rule='evenodd'%3E%3Ccircle cx='3' cy='3' r='1'/%3E%3C/g%3E%3C/svg%3E")` }} />
+      <section className="relative py-20 md:py-32 overflow-hidden">
+        <div
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+          style={{ backgroundImage: `url("./home1.jpg")` }}
+        />
+        <div className="absolute inset-0 bg-[#0f172a]/75" />
         <div className="section-container relative z-10 text-center">
           <span className="section-label text-teal-300">About Our Company</span>
           <h1 className="font-display font-bold text-white text-5xl md:text-7xl mb-8 tracking-tight leading-tight">
             We Are High Flyer Trading
           </h1>
           <p className="text-teal-50/70 text-lg md:text-xl max-w-2xl mx-auto font-medium leading-relaxed">
-            A Ugandan startup built on a simple promise: bring premium home appliances within reach of every family — with genuine quality and honest service.
+            A Ugandan startup built on a simple promise: bring premium home appliances within reach of every family  with genuine quality and honest service.
           </p>
         </div>
       </section>
@@ -42,16 +46,16 @@ export default function AboutPage() {
 
           <div className="order-1 lg:order-2 grid grid-cols-2 gap-6">
             {[
-              { value: '500+', label: 'Happy Families', icon: '😊' },
-              { value: '100%', label: 'Genuine Stock', icon: '✅' },
-              { value: '2+', label: 'Showrooms', icon: '📍' },
-              { value: '4.8★', label: 'Top Rated', icon: '⭐' },
+              { value: '500+', label: 'Happy Families' },
+              { value: '100%', label: 'Genuine Stock' },
+              { value: '2+', label: 'Showrooms'},
+              { value: '4.8★', label: 'Top Rated'},
             ].map((s) => (
               <div
                 key={s.label}
                 className="card p-8 text-center bg-slate-50 border-none shadow-inner"
               >
-                <div className="text-4xl mb-4">{s.icon}</div>
+               
                 <div className="font-display font-bold text-4xl text-slate-900 mb-2">{s.value}</div>
                 <div className="text-xs font-bold text-slate-400 uppercase tracking-widest">{s.label}</div>
               </div>

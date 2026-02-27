@@ -41,12 +41,22 @@ export default function ContactPage() {
     e.preventDefault()
     if (!validate()) return
 
-    // Open mailto as form submission
-    const subject = encodeURIComponent(form.subject || `Enquiry from ${form.name}`)
-    const body = encodeURIComponent(
-      `Name: ${form.name}\nEmail: ${form.email}\nPhone: ${form.phone}\n\nMessage:\n${form.message}`
-    )
-    window.location.href = `mailto:${companyInfo.email}?subject=${subject}&body=${body}`
+    const lines = [
+      `*New Enquiry from Website*`,
+      ``,
+      `*Name:* ${form.name}`,
+      form.email ? `*Email:* ${form.email}` : null,
+      form.phone ? `*Phone:* ${form.phone}` : null,
+      form.subject ? `*Subject:* ${form.subject}` : null,
+      ``,
+      `*Message:*`,
+      form.message,
+    ]
+      .filter((l) => l !== null)
+      .join('\n')
+
+    const waNumber = companyInfo.whatsapp.replace(/\D/g, '')
+    window.open(`https://wa.me/${waNumber}?text=${encodeURIComponent(lines)}`, '_blank')
     setSubmitted(true)
     setForm(initialForm)
     setTimeout(() => setSubmitted(false), 5000)
@@ -55,8 +65,16 @@ export default function ContactPage() {
   return (
     <div className="pt-[112px]">
       {/* Header */}
-      <section className="relative bg-gradient-to-br from-[#0f172a] via-[#0891b2] to-brand-teal py-20 md:py-32 overflow-hidden">
-        <div className="absolute inset-0 opacity-10" style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg width='20' height='20' viewBox='0 0 20 20' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23ffffff' fill-opacity='1' fill-rule='evenodd'%3E%3Ccircle cx='3' cy='3' r='1'/%3E%3C/g%3E%3C/svg%3E")` }} />
+      <section className="relative py-20 md:py-32 overflow-hidden">
+        {/* Background image */}
+        <img
+          src="/home2.jpg"
+          alt=""
+          aria-hidden="true"
+          className="absolute inset-0 w-full h-full object-cover"
+        />
+        {/* Overlay — deep warm-dark, not blue */}
+        <div className="absolute inset-0 bg-[#0f172a]/75" />
         <div className="section-container relative z-10 text-center">
           <span className="section-label text-teal-300">Contact Us</span>
           <h1 className="font-display font-bold text-white text-5xl md:text-7xl mb-8 tracking-tight leading-tight">

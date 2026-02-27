@@ -7,20 +7,20 @@ import { companyInfo } from '../utils/company'
 // expanded to full-width crops for the carousel background
 const slides = [
   {
-    image: 'https://images.unsplash.com/photo-1593359677879-a4bb92f4e4da?auto=format&fit=crop&w=1920&q=80',
-    alt: 'Smart TV in a modern living room',
+    image: '/home1.jpg',
+    alt: 'CHiQ 40" Full HD Smart TV',
   },
   {
-    image: 'https://images.unsplash.com/photo-1571175443880-49e1d25b2bc5?auto=format&fit=crop&w=1920&q=80',
-    alt: 'Premium refrigerator in a bright kitchen',
+    image: '/home2.jpg',
+    alt: 'SPJ Single Door Refrigerator',
   },
   {
-    image: 'https://images.unsplash.com/photo-1626806787461-102c1bfaaea1?auto=format&fit=crop&w=1920&q=80',
-    alt: 'Modern washing machine',
+    image: '/home3.jpg',
+    alt: 'Midea Automatic Washing Machine',
   },
   {
-    image: 'https://images.unsplash.com/photo-1563452965085-2e77e5bf2607?auto=format&fit=crop&w=1920&q=80',
-    alt: 'Air conditioning unit installed in home',
+    image: '/home4.jpg',
+    alt: 'SPJ 4-Burner Gas Cooker with Oven',
   },
 ]
 
