@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { Phone, Mail, MessageCircle, MapPin, Send, Check } from 'lucide-react'
 import { companyInfo } from '../utils/company'
-import Section, { SectionHeader } from '../components/Section'
+import Section from '../components/Section'
 import clsx from 'clsx'
 
 interface FormData {
