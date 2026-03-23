@@ -45,8 +45,8 @@ export default function ShopPage() {
       result = result.filter(
         (p) =>
           p.name.toLowerCase().includes(q) ||
-          p.shortDescription.toLowerCase().includes(q) ||
-          p.tags.some((t) => t.includes(q))
+          (p.shortDescription?.toLowerCase() ?? '').includes(q) ||
+          (p.tags ?? []).some((t) => t?.toLowerCase().includes(q))
       )
     }
 
