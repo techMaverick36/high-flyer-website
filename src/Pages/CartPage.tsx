@@ -34,6 +34,16 @@ export default function CartPage() {
 
   const total = totalPrice()
 
+  const getImageSrc = (item: (typeof items)[number]) => {
+    const image = item.product.images?.[0]
+    return typeof image === 'string' ? image : image?.url
+  }
+
+  const getImageAlt = (item: (typeof items)[number]) => {
+    const image = item.product.images?.[0]
+    return typeof image === 'string' ? item.product.name : image?.alt || item.product.name
+  }
+
   const validate = () => {
     const e: Partial<CustomerInfo> = {}
     if (!customer.name.trim()) e.name = 'Required'
@@ -141,8 +151,8 @@ export default function CartPage() {
                       <div key={item.product.id} className="flex flex-col sm:flex-row gap-6 p-8 group">
                         <Link to={`/product/${item.product.slug}`} className="shrink-0 relative">
                           <img
-                            src={item.product.images[0]}
-                            alt={item.product.name}
+                            src={getImageSrc(item)}
+                            alt={getImageAlt(item)}
                             className="w-32 h-32 object-cover rounded-[24px] bg-slate-50 border border-slate-100 group-hover:scale-105 transition-transform duration-500"
                           />
                         </Link>

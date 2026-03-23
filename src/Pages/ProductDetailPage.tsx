@@ -11,8 +11,9 @@ import {
   Check,
   Minus,
   Plus,
+  Loader2,
 } from 'lucide-react'
-import { getProductBySlug, getRelatedProducts } from '../utils/products'
+import { useGetProductBySlugQuery, useGetRelatedProductsQuery } from '../store/api/sanityApi'
 import { useCartStore } from '../store/Cartstore'
 import { companyInfo } from '../utils/company'
 import { formatPrice, getDiscountPercent } from '../utils'
@@ -22,16 +23,34 @@ import clsx from 'clsx'
 
 export default function ProductDetailPage() {
   const { slug } = useParams<{ slug: string }>()
-  const product = getProductBySlug(slug || '')
+
+  const { data: product, isLoading: productLoading } = useGetProductBySlugQuery(slug || '', {
+    skip: !slug,
+  })
+
+  const { data: related = [] } = useGetRelatedProductsQuery(
+    { categorySlug: product?.category.slug || '', currentId: product?.id || '' },
+    { skip: !product }
+  )
+
+  const loading = productLoading
 
   const [selectedImage, setSelectedImage] = useState(0)
   const [quantity, setQuantity] = useState(1)
   const [added, setAdded] = useState(false)
   const { addItem, openCart } = useCartStore()
 
+  if (loading) {
+    return (
+      <div className="pt-[112px] min-h-screen flex flex-col items-center justify-center text-slate-400 bg-background">
+        <Loader2 size={48} className="animate-spin mb-4 text-brand-teal" />
+        <p className="font-medium text-lg">Loading product details...</p>
+      </div>
+    )
+  }
+
   if (!product) return <Navigate to="/shop" replace />
 
-  const related = getRelatedProducts(product)
   const discount = product.originalPrice
     ? getDiscountPercent(product.originalPrice, product.price)
     : 0
@@ -67,14 +86,14 @@ export default function ProductDetailPage() {
             {/* Main image */}
             <div className="aspect-square rounded-[32px] overflow-hidden bg-white border border-slate-100 shadow-card group">
               <img
-                src={product.images[selectedImage]}
-                alt={product.name}
+                src={product.images[selectedImage]?.url}
+                alt={product.images[selectedImage]?.alt || product.name}
                 className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
               />
             </div>
 
             {/* Thumbnails */}
-            {product.images.length > 1 && (
+            {(product.images?.length ?? 0) > 1 && (
               <div className="flex gap-4">
                 {product.images.map((img, i) => (
                   <button
@@ -87,7 +106,7 @@ export default function ProductDetailPage() {
                         : 'border-slate-100 hover:border-teal-200'
                     )}
                   >
-                    <img src={img} alt="" className="w-full h-full object-cover rounded-xl" />
+                    <img src={img.url} alt={img.alt || ""} className="w-full h-full object-cover rounded-xl" />
                   </button>
                 ))}
               </div>
@@ -121,12 +140,12 @@ export default function ProductDetailPage() {
 
             <div className="flex items-center gap-4 mb-8">
               <StarRating
-                rating={product.rating}
+                rating={product.rating ?? 0}
                 reviewCount={product.reviewCount}
                 size={18}
               />
               <div className="h-4 w-[1px] bg-slate-200" />
-              <span className="text-sm font-bold text-brand-teal uppercase tracking-widest">{product.category}</span>
+              <span className="text-sm font-bold text-brand-teal uppercase tracking-widest">{product.category.title}</span>
             </div>
 
             {/* Price */}
@@ -144,20 +163,39 @@ export default function ProductDetailPage() {
               )}
             </div>
 
-            <p className="text-slate-500 font-medium leading-relaxed mb-10 text-lg">{product.description}</p>
+            <div className="text-slate-500 font-medium leading-relaxed mb-10 text-lg">
+              {typeof product.description === 'string' ? (
+                product.description
+              ) : (
+                <div className="space-y-4">
+                  {/* Since we can't add a portable text component, we just show a placeholder or basic string conversion if any */}
+                  {Array.isArray(product.description) && product.description.map((block: any, i: number) => (
+                    <p key={i}>{block.children?.map((c: any) => c.text).join('')}</p>
+                  ))}
+                </div>
+              )}
+            </div>
 
             {/* Features */}
             <div className="mb-10">
               <h3 className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-6 ml-1">Key Features</h3>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                {product.features.map((feature) => (
-                  <div key={feature} className="flex items-center gap-4 p-4 bg-white border border-slate-50 rounded-2xl shadow-sm group hover:border-brand-teal/30 transition-all">
-                    <div className="w-8 h-8 rounded-lg bg-teal-50 flex items-center justify-center text-brand-teal shrink-0 group-hover:bg-brand-teal group-hover:text-white transition-all">
-                      <Check size={16} strokeWidth={3} />
+                {(product.features ?? []).map((feature: any, i: number) => {
+                  const text = typeof feature === 'string'
+                    ? feature
+                    : Array.isArray(feature?.children)
+                      ? feature.children.map((c: any) => c.text ?? '').join('')
+                      : null
+                  if (!text) return null
+                  return (
+                    <div key={i} className="flex items-center gap-4 p-4 bg-white border border-slate-50 rounded-2xl shadow-sm group hover:border-brand-teal/30 transition-all">
+                      <div className="w-8 h-8 rounded-lg bg-teal-50 flex items-center justify-center text-brand-teal shrink-0 group-hover:bg-brand-teal group-hover:text-white transition-all">
+                        <Check size={16} strokeWidth={3} />
+                      </div>
+                      <span className="text-sm font-bold text-slate-700 leading-tight">{text}</span>
                     </div>
-                    <span className="text-sm font-bold text-slate-700 leading-tight">{feature}</span>
-                  </div>
-                ))}
+                  )
+                })}
               </div>
             </div>
 

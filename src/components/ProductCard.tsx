@@ -35,8 +35,8 @@ export default function ProductCard({ product, className }: ProductCardProps) {
       <Link to={`/product/${product.slug}`} className="block relative aspect-square overflow-hidden bg-slate-50">
         {!imgError ? (
           <img
-            src={product.images[0]}
-            alt={product.name}
+            src={product.images[0]?.url}
+            alt={product.images[0]?.alt || product.name}
             className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
             onError={() => setImgError(true)}
           />
@@ -77,18 +77,22 @@ export default function ProductCard({ product, className }: ProductCardProps) {
       <div className="p-5 flex flex-col flex-grow">
         {/* Rating */}
         <div className="flex items-center gap-1.5 mb-3">
-          <div className="flex items-center gap-0.5 text-amber-400">
-            {Array.from({ length: 5 }).map((_, i) => (
-              <Star
-                key={i}
-                size={11}
-                fill={i < Math.floor(product.rating) ? 'currentColor' : 'none'}
-                strokeWidth={2}
-                className={i < Math.floor(product.rating) ? '' : 'text-slate-200'}
-              />
-            ))}
+          <div className="relative flex items-center gap-0.5" style={{ isolation: 'isolate' }}>
+            <div className="flex items-center gap-0.5 text-slate-200">
+              {Array.from({ length: 5 }).map((_, i) => (
+                <Star key={i} size={11} fill="currentColor" strokeWidth={0} />
+              ))}
+            </div>
+            <div
+              className="absolute inset-0 flex items-center gap-0.5 text-amber-400 overflow-hidden"
+              style={{ width: `${(Math.min(5, Math.max(0, product.rating ?? 0)) / 5) * 100}%` }}
+            >
+              {Array.from({ length: 5 }).map((_, i) => (
+                <Star key={i} size={11} fill="currentColor" strokeWidth={0} style={{ flexShrink: 0 }} />
+              ))}
+            </div>
           </div>
-          <span className="text-[11px] text-slate-400">({product.reviewCount})</span>
+          <span className="text-[11px] text-slate-400">({(product.rating ?? 0).toFixed(1)})</span>
         </div>
 
         {/* Name */}

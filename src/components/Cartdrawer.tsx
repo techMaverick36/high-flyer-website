@@ -30,6 +30,16 @@ export default function CartDrawer() {
 
   const total = totalPrice()
 
+  const getImageSrc = (item: (typeof items)[number]) => {
+    const image = item.product.images?.[0]
+    return typeof image === 'string' ? image : image?.url
+  }
+
+  const getImageAlt = (item: (typeof items)[number]) => {
+    const image = item.product.images?.[0]
+    return typeof image === 'string' ? item.product.name : image?.alt || item.product.name
+  }
+
   const validate = () => {
     const e: Partial<CustomerInfo> = {}
     if (!customer.name.trim()) e.name = 'Name is required'
@@ -130,8 +140,8 @@ export default function CartDrawer() {
                     >
                       <div className="relative w-20 h-20 rounded-2xl overflow-hidden bg-slate-50 border border-slate-100 shrink-0">
                         <img
-                          src={item.product.images[0]}
-                          alt={item.product.name}
+                          src={getImageSrc(item)}
+                          alt={getImageAlt(item)}
                           className="w-full h-full object-cover"
                         />
                       </div>
@@ -144,7 +154,7 @@ export default function CartDrawer() {
                             {formatPrice(item.product.price * item.quantity)}
                           </p>
                         </div>
-                        <p className="text-xs text-slate-400 mb-3 font-medium uppercase tracking-wider">{item.product.warranty || '1 Year Warranty'}</p>
+                        <p className="text-xs text-slate-400 mb-3 font-medium uppercase tracking-wider">Warranty: {item.product.warranty || '1 Year Warranty'}</p>
                         <div className="flex items-center justify-between">
                           <div className="flex items-center bg-slate-100 rounded-lg p-1">
                             <button

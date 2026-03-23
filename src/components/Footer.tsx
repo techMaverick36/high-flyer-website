@@ -1,9 +1,11 @@
 import { Link } from "react-router-dom";
-import { Phone, Mail, MapPin } from "lucide-react";
+import { Phone, Mail, MapPin, Loader2 } from "lucide-react";
 import { companyInfo } from "../utils/company";
+import { useGetAllCategoriesQuery } from "../store/api/sanityApi";
 
 export default function Footer() {
 	const year = new Date().getFullYear();
+	const { data: categories = [], isLoading: loading } = useGetAllCategoriesQuery();
 
 	return (
 		<footer className="bg-[#0f172a] text-slate-400">
@@ -90,24 +92,24 @@ export default function Footer() {
 							Categories
 						</h4>
 						<ul className="space-y-4">
-							{[
-								"Refrigerators",
-								"Washing Machines",
-								"Televisions",
-								"Air Conditioners",
-								"Microwaves",
-								"Water Dispensers",
-							].map((cat) => (
-								<li key={cat}>
-									<Link
-										to={`/shop?category=${cat.toLowerCase().replace(/ /g, "-")}`}
-										className="text-sm hover:text-brand-teal transition-colors flex items-center group"
-									>
-										<span className="w-0 group-hover:w-2 h-[1px] bg-brand-teal mr-0 group-hover:mr-2 transition-all"></span>
-										{cat}
-									</Link>
+							{loading ? (
+								<li className="flex items-center gap-2 text-sm text-slate-500">
+									<Loader2 size={14} className="animate-spin" />
+									Loading...
 								</li>
-							))}
+							) : (
+								categories.slice(0, 6).map((cat) => (
+									<li key={cat.id}>
+										<Link
+											to={`/shop?category=${cat.id}`}
+											className="text-sm hover:text-brand-teal transition-colors flex items-center group"
+										>
+											<span className="w-0 group-hover:w-2 h-[1px] bg-brand-teal mr-0 group-hover:mr-2 transition-all"></span>
+											{cat.label}
+										</Link>
+									</li>
+								))
+							)}
 						</ul>
 					</div>
 

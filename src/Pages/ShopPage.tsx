@@ -1,7 +1,8 @@
 import { useState, useMemo } from 'react'
 import { useSearchParams } from 'react-router-dom'
-import { Search, SlidersHorizontal, X, ChevronDown } from 'lucide-react'
-import { products, categories } from '../utils/products'
+import { Search, SlidersHorizontal, X, ChevronDown, Loader2 } from 'lucide-react'
+import { categories } from '../utils/products'
+import { useGetAllProductsQuery, useGetAllCategoriesQuery } from '../store/api/sanityApi'
 import type { FilterState, ProductCategory, SortOption } from '../utils/types'
 import ProductCard from '../components/ProductCard'
 import clsx from 'clsx'
@@ -18,6 +19,10 @@ const MAX_PRICE = 7_000_000
 export default function ShopPage() {
   const [searchParams, setSearchParams] = useSearchParams()
   const [showFilters, setShowFilters] = useState(false)
+
+  const { data: products = [], isLoading: productsLoading } = useGetAllProductsQuery()
+  const { data: allCategories = [], isLoading: categoriesLoading } = useGetAllCategoriesQuery()
+  const loading = productsLoading || categoriesLoading
 
   const [filters, setFilters] = useState<FilterState>({
     category: (searchParams.get('category') as ProductCategory) || 'all',
@@ -46,7 +51,7 @@ export default function ShopPage() {
     }
 
     if (filters.category !== 'all') {
-      result = result.filter((p) => p.category === filters.category)
+      result = result.filter((p) => p.category.slug === filters.category)
     }
 
     result = result.filter(
@@ -73,7 +78,7 @@ export default function ShopPage() {
     }
 
     return result
-  }, [filters])
+  }, [filters, products])
 
   const clearFilters = () => {
     setFilters({
@@ -159,10 +164,10 @@ export default function ShopPage() {
                   {filters.category === 'all' && <div className="w-1.5 h-1.5 rounded-full bg-brand-teal" />}
                 </button>
                 <div className="h-[1px] bg-slate-100 my-1 mx-2" />
-                {categories.map((cat) => (
+                {allCategories.map((cat) => (
                   <button
                     key={cat.id}
-                    onClick={() => updateFilter('category', cat.id)}
+                    onClick={() => updateFilter('category', cat.id as ProductCategory)}
                     className={clsx(
                       'w-full text-left px-4 py-2.5 rounded-xl text-sm transition-all duration-200 flex items-center gap-3 group',
                       filters.category === cat.id
@@ -171,7 +176,11 @@ export default function ShopPage() {
                     )}
                   >
                     <div className="w-8 h-8 rounded-lg overflow-hidden shrink-0 border border-slate-100 group-hover:scale-110 transition-transform">
-                      <img src={cat.image} alt="" className="w-full h-full object-cover" />
+                      {cat.image ? (
+                        <img src={cat.image} alt="" className="w-full h-full object-cover" />
+                      ) : (
+                        <div className="w-full h-full bg-slate-100 flex items-center justify-center text-xs">{cat.icon}</div>
+                      )}
                     </div>
                     <span className="flex-1">{cat.label}</span>
                     <span className={clsx(
@@ -283,7 +292,7 @@ export default function ShopPage() {
                   <div className="hidden sm:flex gap-2">
                     {filters.category !== 'all' && (
                       <span className="px-3 py-1.5 bg-teal-50 text-brand-teal text-[10px] font-bold uppercase tracking-wider rounded-lg border border-teal-100 flex items-center gap-2">
-                        {categories.find((c) => c.id === filters.category)?.label}
+                        {allCategories.find((c) => c.id === filters.category)?.label || categories.find((c) => c.id === filters.category)?.label}
                         <X size={12} className="cursor-pointer" onClick={() => updateFilter('category', 'all')} />
                       </span>
                     )}
@@ -307,7 +316,12 @@ export default function ShopPage() {
               </div>
             </div>
 
-            {filtered.length === 0 ? (
+            {loading ? (
+              <div className="flex flex-col items-center justify-center py-24 text-slate-400">
+                <Loader2 size={48} className="animate-spin mb-4 text-brand-teal" />
+                <p className="font-medium">Loading products...</p>
+              </div>
+            ) : filtered.length === 0 ? (
               <div className="card bg-white p-16 text-center">
                 <div className="text-7xl mb-8 grayscale opacity-50">🔍</div>
                 <h3 className="font-display font-bold text-2xl text-slate-900 mb-4">

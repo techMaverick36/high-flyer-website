@@ -19,6 +19,55 @@ interface CartStore {
   totalPrice: () => number
 }
 
+const getProductKey = (product: Partial<Product>): string =>
+  product.id || product.slug || product.name || ''
+
+const normalizeQuantity = (quantity: number): number =>
+  Math.max(1, Math.floor(Number(quantity) || 1))
+
+const normalizeProduct = (product: Product): Product => ({
+  ...product,
+  id: product.id || product.slug || product.name,
+  images: Array.isArray(product.images)
+    ? product.images
+        .map((image) =>
+          typeof image === 'string'
+            ? { url: image, alt: product.name }
+            : { ...image, url: image?.url || '', alt: image?.alt || product.name }
+        )
+        .filter((image) => image.url)
+    : [],
+})
+
+const normalizeCartItems = (items: unknown): CartItem[] => {
+  if (!Array.isArray(items)) return []
+
+  const merged = new Map<string, CartItem>()
+
+  for (const entry of items) {
+    if (!entry || typeof entry !== 'object' || !('product' in entry)) continue
+
+    const rawProduct = (entry as CartItem).product
+    if (!rawProduct || typeof rawProduct !== 'object') continue
+
+    const product = normalizeProduct(rawProduct as Product)
+    const key = getProductKey(product)
+    const quantity = normalizeQuantity((entry as CartItem).quantity)
+
+    if (!key) continue
+
+    const existing = merged.get(key)
+    merged.set(
+      key,
+      existing
+        ? { ...existing, quantity: existing.quantity + quantity }
+        : { product, quantity }
+    )
+  }
+
+  return [...merged.values()]
+}
+
 export const useCartStore = create<CartStore>()(
   persist(
     (set, get) => ({
@@ -26,22 +75,35 @@ export const useCartStore = create<CartStore>()(
       isOpen: false,
 
       addItem: (product, quantity = 1) => {
-        const existing = get().items.find((i) => i.product.id === product.id)
+        const normalizedProduct = normalizeProduct(product)
+        const normalizedQuantity = normalizeQuantity(quantity)
+        const productKey = getProductKey(normalizedProduct)
+        const existing = get().items.find(
+          (i) => getProductKey(i.product) === productKey
+        )
+
         if (existing) {
           set({
             items: get().items.map((i) =>
-              i.product.id === product.id
-                ? { ...i, quantity: i.quantity + quantity }
+              getProductKey(i.product) === productKey
+                ? { ...i, quantity: i.quantity + normalizedQuantity }
                 : i
             ),
           })
         } else {
-          set({ items: [...get().items, { product, quantity }] })
+          set({
+            items: [
+              ...get().items,
+              { product: normalizedProduct, quantity: normalizedQuantity },
+            ],
+          })
         }
       },
 
       removeItem: (productId) => {
-        set({ items: get().items.filter((i) => i.product.id !== productId) })
+        set({
+          items: get().items.filter((i) => getProductKey(i.product) !== productId),
+        })
       },
 
       updateQuantity: (productId, quantity) => {
@@ -51,7 +113,9 @@ export const useCartStore = create<CartStore>()(
         }
         set({
           items: get().items.map((i) =>
-            i.product.id === productId ? { ...i, quantity } : i
+            getProductKey(i.product) === productId
+              ? { ...i, quantity: normalizeQuantity(quantity) }
+              : i
           ),
         })
       },
@@ -67,6 +131,18 @@ export const useCartStore = create<CartStore>()(
     }),
     {
       name: 'high-flyer-cart',
+      version: 1,
+      migrate: (persistedState) => {
+        const state =
+          persistedState && typeof persistedState === 'object'
+            ? (persistedState as Partial<CartStore>)
+            : {}
+
+        return {
+          ...state,
+          items: normalizeCartItems(state.items),
+        }
+      },
       partialize: (state) => ({ items: state.items }),
     }
   )

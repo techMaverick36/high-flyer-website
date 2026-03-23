@@ -1,16 +1,27 @@
+export interface SanityImage {
+  url: string;
+  alt: string;
+  lqip?: string;
+}
+
 // ─── Product ───────────────────────────────────────────────
 export interface Product {
   id: string
   name: string
   slug: string
-  category: ProductCategory
+  category: {
+    title: string;
+    slug: string;
+    icon?: string;
+  }
   price: number
   originalPrice?: number
-  description: string
+  description: any[]
   shortDescription: string
   features: string[]
-  images: string[]
+  images: SanityImage[]
   badge?: string
+  featured?: boolean
   inStock: boolean
   warranty: string
   rating: number
