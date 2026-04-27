@@ -38,8 +38,8 @@ export const testimonials: Testimonial[] = [
 export const companyInfo = {
 	name: "High Flyer Trading CO LTD",
 	tagline: "Uganda's Home Appliance Destination",
-	phone: "+256 742 244 256",
-	whatsapp: "+256 742 244 256",
+	phone: "+256 703334664",
+	whatsapp: "+256 703334664",
 	email: "info@highflyertrading.co.ug",
 	locations: [
 		{

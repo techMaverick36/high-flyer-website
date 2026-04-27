@@ -1,6 +1,6 @@
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useEffect } from 'react'
 import { useSearchParams } from 'react-router-dom'
-import { Search, SlidersHorizontal, X, ChevronDown, Loader2 } from 'lucide-react'
+import { Search, SlidersHorizontal, X, ChevronDown, Loader2, ChevronLeft, ChevronRight } from 'lucide-react'
 import { categories } from '../utils/products'
 import { useGetAllProductsQuery, useGetAllCategoriesQuery } from '../store/api/sanityApi'
 import type { FilterState, ProductCategory, SortOption } from '../utils/types'
@@ -15,10 +15,12 @@ const sortOptions: { value: SortOption; label: string }[] = [
 ]
 
 const MAX_PRICE = 7_000_000
+const ITEMS_PER_PAGE = 9
 
 export default function ShopPage() {
   const [searchParams, setSearchParams] = useSearchParams()
   const [showFilters, setShowFilters] = useState(false)
+  const [currentPage, setCurrentPage] = useState(1)
 
   const { data: products = [], isLoading: productsLoading } = useGetAllProductsQuery()
   const { data: allCategories = [], isLoading: categoriesLoading } = useGetAllCategoriesQuery()
@@ -35,6 +37,7 @@ export default function ShopPage() {
 
   const updateFilter = <K extends keyof FilterState>(key: K, value: FilterState[K]) => {
     setFilters((prev) => ({ ...prev, [key]: value }))
+    setCurrentPage(1)
   }
 
   const filtered = useMemo(() => {
@@ -90,6 +93,21 @@ export default function ShopPage() {
       search: '',
     })
     setSearchParams({})
+    setCurrentPage(1)
+  }
+
+  const totalPages = Math.ceil(filtered.length / ITEMS_PER_PAGE)
+  const paginated = filtered.slice((currentPage - 1) * ITEMS_PER_PAGE, currentPage * ITEMS_PER_PAGE)
+
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }, [currentPage])
+
+  const getPageNumbers = (): (number | '...')[] => {
+    if (totalPages <= 7) return Array.from({ length: totalPages }, (_, i) => i + 1)
+    if (currentPage <= 4) return [1, 2, 3, 4, 5, '...', totalPages]
+    if (currentPage >= totalPages - 3) return [1, '...', totalPages - 4, totalPages - 3, totalPages - 2, totalPages - 1, totalPages]
+    return [1, '...', currentPage - 1, currentPage, currentPage + 1, '...', totalPages]
   }
 
   const hasActiveFilters =
@@ -335,11 +353,54 @@ export default function ShopPage() {
                 </button>
               </div>
             ) : (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
-                {filtered.map((product) => (
-                  <ProductCard key={product.id} product={product} />
-                ))}
-              </div>
+              <>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
+                  {paginated.map((product) => (
+                    <ProductCard key={product.id} product={product} />
+                  ))}
+                </div>
+
+                {totalPages > 1 && (
+                  <div className="flex items-center justify-center gap-1.5 mt-12">
+                    <button
+                      onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+                      disabled={currentPage === 1}
+                      className="flex items-center gap-1.5 px-4 py-2.5 rounded-xl border border-slate-200 text-sm font-bold text-slate-600 hover:bg-slate-50 disabled:opacity-40 disabled:cursor-not-allowed transition-all"
+                    >
+                      <ChevronLeft size={16} /> Previous
+                    </button>
+
+                    <div className="flex items-center gap-1">
+                      {getPageNumbers().map((page, i) =>
+                        page === '...' ? (
+                          <span key={`ellipsis-${i}`} className="w-10 text-center text-slate-400 font-bold">···</span>
+                        ) : (
+                          <button
+                            key={page}
+                            onClick={() => setCurrentPage(page)}
+                            className={clsx(
+                              'w-10 h-10 rounded-xl text-sm font-bold transition-all',
+                              currentPage === page
+                                ? 'bg-white border-2 border-slate-800 text-slate-900'
+                                : 'text-slate-500 hover:bg-slate-100'
+                            )}
+                          >
+                            {page}
+                          </button>
+                        )
+                      )}
+                    </div>
+
+                    <button
+                      onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
+                      disabled={currentPage === totalPages}
+                      className="flex items-center gap-1.5 px-4 py-2.5 rounded-xl border border-slate-200 text-sm font-bold text-slate-600 hover:bg-slate-50 disabled:opacity-40 disabled:cursor-not-allowed transition-all"
+                    >
+                      Next <ChevronRight size={16} />
+                    </button>
+                  </div>
+                )}
+              </>
             )}
           </div>
         </div>
