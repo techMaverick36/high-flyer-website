@@ -39,11 +39,11 @@ export default function CategoriesSection() {
                     className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                   />
                 ) : (
-                  <div className="w-full h-full flex items-center justify-center text-4xl">{cat.icon}</div>
+                  <div className="w-full h-full bg-slate-50 flex items-center justify-center">
+                    <span className="text-slate-300 text-sm font-bold uppercase tracking-widest">{cat.label}</span>
+                  </div>
                 )}
-                <div className="absolute inset-0 bg-linear-to-t from-slate-900/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end justify-center pb-4">
-                  <span className="text-white text-xs font-bold uppercase tracking-widest">Explore Category</span>
-                </div>
+                <div className="absolute inset-0 bg-linear-to-t from-slate-900/35 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
               </div>
               <div className="p-6 flex flex-col items-center">
                 <h3 className="font-display font-bold text-slate-900 text-lg mb-2 group-hover:text-brand-teal transition-colors">

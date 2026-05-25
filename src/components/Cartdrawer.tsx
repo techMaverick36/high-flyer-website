@@ -122,7 +122,9 @@ export default function CartDrawer() {
             <div className="flex-1 overflow-y-auto px-8 py-4">
               {items.length === 0 ? (
                 <div className="flex flex-col items-center justify-center h-full text-center gap-6">
-                  <div className="text-7xl opacity-20">🛒</div>
+                  <div className="w-20 h-20 rounded-[28px] bg-slate-100 flex items-center justify-center">
+                    <ShoppingBag size={32} className="text-slate-400" />
+                  </div>
                   <div>
                     <h3 className="font-display font-bold text-slate-900 text-xl mb-2">Your cart is empty</h3>
                     <p className="text-sm text-slate-500 max-w-[200px] mx-auto leading-relaxed">Looks like you haven't added any appliances yet.</p>
@@ -201,7 +203,7 @@ export default function CartDrawer() {
                     <span className="font-display font-bold text-brand-teal text-2xl">{formatPrice(total)}</span>
                   </div>
                   <p className="text-[11px] text-slate-400 bg-slate-50 p-3 rounded-xl leading-relaxed mt-4">
-                    ✨ <span className="font-bold text-slate-600">Note:</span> Delivery costs and special discounts will be confirmed by our team after you place the order.
+                    <span className="font-bold text-slate-600">Note:</span> Delivery costs and special discounts will be confirmed by our team after you place the order.
                   </p>
                 </div>
                 <button

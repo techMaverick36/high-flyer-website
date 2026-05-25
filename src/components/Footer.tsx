@@ -34,29 +34,30 @@ export default function Footer() {
 							products, expert advice, and reliable after-sales service.
 						</p>
 						<div className="flex gap-4">
-							{[
-								{
-									href: companyInfo.socialMedia.facebook,
-									icon: "f",
-									label: "Facebook",
-								},
-								{
-									href: companyInfo.socialMedia.instagram,
-									icon: "📷",
-									label: "Instagram",
-								},
-							].map((social) => (
-								<a
-									key={social.label}
-									href={social.href}
-									target="_blank"
-									rel="noopener noreferrer"
-									className="w-10 h-10 rounded-xl bg-slate-800/50 hover:bg-brand-teal text-white flex items-center justify-center text-sm transition-all duration-300 hover:-translate-y-1"
-									aria-label={social.label}
-								>
-									{social.icon}
-								</a>
-							))}
+							<a
+								href={companyInfo.socialMedia.facebook}
+								target="_blank"
+								rel="noopener noreferrer"
+								className="w-10 h-10 rounded-xl bg-slate-800/50 hover:bg-brand-teal text-white flex items-center justify-center transition-all duration-300 hover:-translate-y-1"
+								aria-label="Facebook"
+							>
+								<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+									<path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/>
+								</svg>
+							</a>
+							<a
+								href={companyInfo.socialMedia.instagram}
+								target="_blank"
+								rel="noopener noreferrer"
+								className="w-10 h-10 rounded-xl bg-slate-800/50 hover:bg-brand-teal text-white flex items-center justify-center transition-all duration-300 hover:-translate-y-1"
+								aria-label="Instagram"
+							>
+								<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+									<rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
+									<path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/>
+									<line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/>
+								</svg>
+							</a>
 						</div>
 					</div>
 
@@ -78,7 +79,7 @@ export default function Footer() {
 										to={link.path}
 										className="text-sm hover:text-brand-teal transition-colors flex items-center group"
 									>
-										<span className="w-0 group-hover:w-2 h-[1px] bg-brand-teal mr-0 group-hover:mr-2 transition-all"></span>
+										<span className="w-0 group-hover:w-2 h-px bg-brand-teal mr-0 group-hover:mr-2 transition-all"></span>
 										{link.label}
 									</Link>
 								</li>
@@ -104,7 +105,7 @@ export default function Footer() {
 											to={`/shop?category=${cat.id}`}
 											className="text-sm hover:text-brand-teal transition-colors flex items-center group"
 										>
-											<span className="w-0 group-hover:w-2 h-[1px] bg-brand-teal mr-0 group-hover:mr-2 transition-all"></span>
+											<span className="w-0 group-hover:w-2 h-px bg-brand-teal mr-0 group-hover:mr-2 transition-all"></span>
 											{cat.label}
 										</Link>
 									</li>

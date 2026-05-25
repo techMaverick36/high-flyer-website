@@ -18,33 +18,24 @@ export default function LocationsSection() {
             key={loc.id}
             className="card card-hover overflow-hidden group"
           >
-            {/* Map placeholder */}
-            <div className="h-56 bg-gradient-to-br from-teal-50 to-teal-100 flex items-center justify-center relative overflow-hidden">
-              <div className="absolute inset-0 opacity-20 group-hover:scale-110 transition-transform duration-700"
-                style={{
-                  backgroundImage: `url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%230891b2' fill-opacity='1'%3E%3Crect x='0' y='0' width='1' height='40'/%3E%3Crect x='0' y='0' width='40' height='1'/%3E%3C/g%3E%3C/svg%3E")`,
-                }}
-              />
-              <div className="text-center relative z-10 p-6">
-                <div className="w-16 h-16 bg-brand-teal rounded-3xl flex items-center justify-center mx-auto mb-4 shadow-xl transform transition-transform group-hover:rotate-12">
-                  <MapPin size={28} className="text-white" />
-                </div>
-                <div className="inline-block px-4 py-1.5 bg-white/90 backdrop-blur-sm rounded-full text-brand-teal text-[10px] font-bold uppercase tracking-widest shadow-sm">
-                  {loc.type}
-                </div>
+            {/* Location header */}
+            <div className="bg-slate-900 px-8 py-7 flex items-center justify-between gap-4 relative overflow-hidden">
+              <div className="absolute right-0 top-0 w-40 h-40 bg-brand-teal/10 rounded-full blur-2xl pointer-events-none" />
+              <div className="relative">
+                <span className="text-[10px] font-bold uppercase tracking-[0.15em] text-teal-400 mb-1.5 block">{loc.type}</span>
+                <h3 className="font-display font-bold text-white text-xl group-hover:text-teal-300 transition-colors leading-snug">{loc.name}</h3>
               </div>
               <a
                 href={loc.mapUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="absolute bottom-4 right-4 bg-slate-900 text-white text-[11px] font-bold uppercase tracking-widest px-4 py-2 rounded-xl flex items-center gap-2 shadow-xl hover:bg-brand-teal transition-all"
+                className="relative flex items-center gap-2 px-4 py-2.5 bg-brand-teal text-white text-[11px] font-bold uppercase tracking-widest rounded-xl hover:bg-teal-600 transition-all shrink-0"
               >
                 <ExternalLink size={12} /> Directions
               </a>
             </div>
 
             <div className="p-8">
-              <h3 className="font-display font-bold text-slate-900 text-xl mb-4 group-hover:text-brand-teal transition-colors">{loc.name}</h3>
               <div className="space-y-4">
                 <div className="flex items-start gap-4">
                   <div className="w-8 h-8 rounded-lg bg-teal-50 flex items-center justify-center shrink-0">

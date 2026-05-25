@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { ShoppingCart, Eye, Star } from 'lucide-react'
+import { ShoppingCart, Eye, Star, Check, Home } from 'lucide-react'
 import type { Product } from '../utils/types'
 import { useCartStore } from '../store/Cartstore'
 import { formatPrice, getDiscountPercent } from '../utils'
@@ -41,8 +41,8 @@ export default function ProductCard({ product, className }: ProductCardProps) {
             onError={() => setImgError(true)}
           />
         ) : (
-          <div className="w-full h-full flex items-center justify-center text-5xl bg-slate-100">
-            🏠
+          <div className="w-full h-full flex items-center justify-center bg-slate-100">
+            <Home size={40} className="text-slate-300" />
           </div>
         )}
 
@@ -74,7 +74,7 @@ export default function ProductCard({ product, className }: ProductCardProps) {
       </Link>
 
       {/* Info */}
-      <div className="p-5 flex flex-col flex-grow">
+      <div className="p-5 flex flex-col grow">
         {/* Rating */}
         <div className="flex items-center gap-1.5 mb-3">
           <div className="relative flex items-center gap-0.5" style={{ isolation: 'isolate' }}>
@@ -102,7 +102,7 @@ export default function ProductCard({ product, className }: ProductCardProps) {
           </h3>
         </Link>
 
-        <p className="text-xs text-slate-500 line-clamp-2 mb-4 flex-grow leading-relaxed">
+        <p className="text-xs text-slate-500 line-clamp-2 mb-4 grow leading-relaxed">
           {product.shortDescription}
         </p>
 
@@ -132,7 +132,7 @@ export default function ProductCard({ product, className }: ProductCardProps) {
           )}
         >
           {added ? (
-            <span className="flex items-center gap-2">✓ Added to cart</span>
+            <span className="flex items-center gap-2"><Check size={15} strokeWidth={3} /> Added to cart</span>
           ) : (
             <>
               <ShoppingCart size={15} />

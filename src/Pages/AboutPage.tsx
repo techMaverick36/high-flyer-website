@@ -1,12 +1,12 @@
 import { Link } from 'react-router-dom'
-import { ArrowRight, MapPin, Target, Eye, Heart, Clock } from 'lucide-react'
+import { ArrowRight, MapPin, Target, Eye, Heart, Clock, Check } from 'lucide-react'
 import { companyInfo } from '../utils/company'
 import Section, { SectionHeader } from '../components/Section'
 import clsx from 'clsx'
 
 export default function AboutPage() {
   return (
-    <div className="pt-[112px]">
+    <div className="pt-28">
       {/* Hero */}
       <section className="relative py-20 md:py-32 overflow-hidden">
         <div
@@ -49,7 +49,7 @@ export default function AboutPage() {
               { value: '500+', label: 'Happy Families' },
               { value: '100%', label: 'Genuine Stock' },
               { value: '2+', label: 'Showrooms'},
-              { value: '4.8★', label: 'Top Rated'},
+              { value: '4.8', label: 'Top Rated'},
             ].map((s) => (
               <div
                 key={s.label}
@@ -117,10 +117,10 @@ export default function AboutPage() {
           {companyInfo.whyChooseUs.map((item) => (
             <div
               key={item.title}
-              className="flex items-center gap-6 p-8 card bg-slate-50 border-none group hover:bg-white hover:shadow-2xl hover:shadow-brand-teal/5 transition-all"
+              className="flex items-start gap-5 p-8 card bg-slate-50 border-none group hover:bg-white hover:shadow-2xl hover:shadow-brand-teal/5 transition-all"
             >
-              <div className="w-16 h-16 rounded-2xl bg-white flex items-center justify-center text-3xl shrink-0 shadow-sm group-hover:scale-110 transition-transform">
-                {item.icon}
+              <div className="w-10 h-10 rounded-full bg-teal-50 flex items-center justify-center shrink-0 mt-0.5">
+                <Check size={18} className="text-brand-teal" strokeWidth={3} />
               </div>
               <div>
                 <h4 className="font-display font-bold text-slate-900 mb-2 text-xl leading-none">{item.title}</h4>
@@ -151,7 +151,7 @@ export default function AboutPage() {
               <h3 className="font-display font-bold text-3xl text-slate-900 mb-4">{loc.name}</h3>
               <p className="text-slate-500 font-medium text-lg mb-8 max-w-md">{loc.address}</p>
               
-              <div className="w-full h-[1px] bg-slate-100 mb-8" />
+              <div className="w-full h-px bg-slate-100 mb-8" />
               
               <div className="flex items-center gap-2 text-slate-400 font-bold uppercase tracking-widest text-xs mb-8">
                 <Clock size={16} />
@@ -174,7 +174,7 @@ export default function AboutPage() {
       {/* CTA */}
       <Section className="!p-0">
         <div className="section-container pb-20">
-          <div className="bg-gradient-to-br from-brand-orange to-orange-700 rounded-[40px] p-12 md:p-20 text-center relative overflow-hidden shadow-2xl">
+          <div className="bg-linear-to-br from-brand-orange to-orange-700 rounded-[40px] p-12 md:p-20 text-center relative overflow-hidden shadow-2xl">
             <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 blur-3xl rounded-full translate-x-1/2 -translate-y-1/2" />
             <div className="relative z-10">
               <h2 className="font-display font-bold text-white text-4xl md:text-6xl mb-8 tracking-tight">

@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { ShoppingCart, Menu, X, Phone, MailIcon } from "lucide-react";
+import { ShoppingCart, Menu, X, Phone, MessageCircle } from "lucide-react";
 import { useCartStore } from "../store/Cartstore";
 import { companyInfo } from "../utils/company";
 import clsx from "clsx";
@@ -44,7 +44,7 @@ export default function Header() {
 				<div className="bg-teal-700 text-white text-[10px] md:text-xs h-8 flex items-center">
 					<div className="section-container flex items-center justify-between w-full">
 						<span className="hidden sm:block font-medium opacity-90">
-							📍 Showroom: Aponye Shopping Centre, Kampala
+							Showroom: Aponye Shopping Centre, Kampala
 						</span>
 						<div className="flex items-center gap-4 ml-auto sm:ml-0">
 							<a
@@ -102,7 +102,7 @@ export default function Header() {
 								rel="noopener noreferrer"
 								className="hidden lg:flex btn px-5 py-2.5 bg-[#25D366] text-white hover:bg-[#196334] text-sm gap-2 shadow-sm"
 							>
-								<MailIcon size={16} className="mr-1" />
+								<MessageCircle size={16} className="mr-1" />
 								WhatsApp
 							</a>
 
@@ -174,9 +174,10 @@ export default function Header() {
 							href={`https://wa.me/${companyInfo.whatsapp.replace(/\D/g, "")}`}
 							target="_blank"
 							rel="noopener noreferrer"
-							className="btn btn-orange py-4 text-base shadow-lg shadow-orange-500/20"
+							className="btn btn-orange py-4 text-base shadow-lg shadow-orange-500/20 gap-2"
 						>
-							💬 Chat on WhatsApp
+							<MessageCircle size={18} />
+							Chat on WhatsApp
 						</a>
 						<a
 							href={`tel:${companyInfo.phone}`}

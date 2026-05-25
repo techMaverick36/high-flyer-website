@@ -135,7 +135,9 @@ export default function CartPage() {
 
         {items.length === 0 && !sent ? (
           <div className="card bg-white p-20 text-center max-w-2xl mx-auto shadow-2xl shadow-slate-200/50">
-            <div className="text-8xl mb-8 opacity-20">🛒</div>
+            <div className="w-24 h-24 rounded-4xl bg-slate-100 flex items-center justify-center mx-auto mb-8">
+              <ShoppingBag size={40} className="text-slate-400" />
+            </div>
             <h2 className="font-display font-bold text-3xl text-slate-900 mb-4">Your cart is empty</h2>
             <p className="text-slate-500 font-medium mb-10 leading-relaxed text-lg">Looks like you haven't added any premium appliances to your cart yet.</p>
             <Link to="/shop" className="btn btn-primary px-10 py-4 shadow-xl shadow-brand-teal/20">Browse Collection</Link>
@@ -153,7 +155,7 @@ export default function CartPage() {
                           <img
                             src={getImageSrc(item)}
                             alt={getImageAlt(item)}
-                            className="w-32 h-32 object-cover rounded-[24px] bg-slate-50 border border-slate-100 group-hover:scale-105 transition-transform duration-500"
+                            className="w-32 h-32 object-cover rounded-3xl bg-slate-50 border border-slate-100 group-hover:scale-105 transition-transform duration-500"
                           />
                         </Link>
                         <div className="flex-1 min-w-0 flex flex-col justify-center">
@@ -285,10 +287,10 @@ export default function CartPage() {
 
             {/* Order Summary */}
             <div className="lg:col-span-4">
-              <div className="card bg-white p-8 sticky top-[136px] shadow-2xl shadow-slate-200/50 border-2 border-slate-50">
+              <div className="card bg-white p-8 sticky top-34 shadow-2xl shadow-slate-200/50 border-2 border-slate-50">
                 <h3 className="font-display font-bold text-2xl text-slate-900 mb-8 tracking-tight">Order Summary</h3>
                 
-                <div className="space-y-4 mb-8 max-h-[300px] overflow-y-auto pr-2 custom-scrollbar">
+                <div className="space-y-4 mb-8 max-h-75 overflow-y-auto pr-2 custom-scrollbar">
                   {items.map((item) => (
                     <div key={item.product.id} className="flex justify-between items-start group">
                       <div className="min-w-0">

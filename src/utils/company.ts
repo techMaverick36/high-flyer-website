@@ -69,37 +69,31 @@ export const companyInfo = {
 	},
 	whyChooseUs: [
 		{
-			icon: "🏆",
 			title: "Genuine Products Only",
 			description:
 				"Every appliance we sell is 100% authentic, sourced directly from certified manufacturers and authorized distributors.",
 		},
 		{
-			icon: "🛡️",
 			title: "Manufacturer Warranty",
 			description:
 				"All products come with full manufacturer warranties. We handle claims on your behalf hassle-free.",
 		},
 		{
-			icon: "🚚",
 			title: "Delivery & Installation",
 			description:
 				"We deliver across Kampala and offer professional installation services so your appliance is ready to use from day one.",
 		},
 		{
-			icon: "💬",
 			title: "Expert Advice",
 			description:
 				"Our trained team helps you pick the right appliance for your needs and budget. No pushy sales tactics.",
 		},
 		{
-			icon: "🏪",
 			title: "Physical Showroom",
 			description:
 				"Visit our showroom at Aponye to see, touch, and test appliances before you buy. Real products, real confidence.",
 		},
 		{
-			icon: "⚡",
 			title: "After-Sales Support",
 			description:
 				"Our support doesn't end at purchase. We're available on WhatsApp and phone for any questions or issues.",

@@ -76,7 +76,7 @@ export const categories: CategoryMeta[] = [
 	{
 		id: "refrigerators" as any,
 		label: "Refrigerators",
-		icon: "🧊",
+		icon: "",
 		image: "/fridge-single-350.jpeg",
 		description: "Keep food fresh longer",
 		count: 2,
@@ -84,7 +84,7 @@ export const categories: CategoryMeta[] = [
 	{
 		id: "washing-machines" as any,
 		label: "Washing Machines",
-		icon: "🫧",
+		icon: "",
 		image: "/midea-washing-1.7m.jpeg",
 		description: "Clean clothes effortlessly",
 		count: 3,
@@ -92,7 +92,7 @@ export const categories: CategoryMeta[] = [
 	{
 		id: "televisions" as any,
 		label: "Televisions",
-		icon: "📺",
+		icon: "",
 		image: "/chiq-40inch-700k.jpeg",
 		description: "Stunning displays for every room",
 		count: 13,
@@ -100,7 +100,7 @@ export const categories: CategoryMeta[] = [
 	{
 		id: "cookers" as any,
 		label: "Cookers",
-		icon: "🍳",
+		icon: "",
 		image: "/spj-cooker-990k.jpeg",
 		description: "Gas and electric cookers for every kitchen",
 		count: 8,
@@ -108,7 +108,7 @@ export const categories: CategoryMeta[] = [
 	{
 		id: "air-fryers" as any,
 		label: "Air Fryers",
-		icon: "♨️",
+		icon: "",
 		image: "/kenwood-airfryer-400k.jpeg",
 		description: "Crispy food with less oil",
 		count: 2,
@@ -116,7 +116,7 @@ export const categories: CategoryMeta[] = [
 	{
 		id: "rice-cookers" as any,
 		label: "Rice Cookers",
-		icon: "🍚",
+		icon: "",
 		image: "/oriamo-rice-cooker-250k.jpeg",
 		description: "Perfect rice every time",
 		count: 2,
@@ -124,7 +124,7 @@ export const categories: CategoryMeta[] = [
 	{
 		id: "fans" as any,
 		label: "Fans",
-		icon: "💨",
+		icon: "",
 		image: "/philips-fan-180k.jpeg",
 		description: "Powerful cooling solutions",
 		count: 6,
@@ -132,7 +132,7 @@ export const categories: CategoryMeta[] = [
 	{
 		id: "blenders" as any,
 		label: "Blenders",
-		icon: "🥤",
+		icon: "",
 		image: "/Hoffmans-blender-300k.jpeg",
 		description: "Smooth blends every time",
 		count: 2,
@@ -140,7 +140,7 @@ export const categories: CategoryMeta[] = [
 	{
 		id: "extension-cords" as any,
 		label: "Extension Cords",
-		icon: "🔌",
+		icon: "",
 		image: "/saachi-50k.jpeg",
 		description: "Safe and reliable power extensions",
 		count: 1,
@@ -148,7 +148,7 @@ export const categories: CategoryMeta[] = [
 	{
 		id: "small-appliances" as any,
 		label: "Small Appliances",
-		icon: "⚡",
+		icon: "",
 		image: "/Coffee-maker-250k.jpeg",
 		description: "Coffee makers, steamers, warmers and more",
 		count: 4,

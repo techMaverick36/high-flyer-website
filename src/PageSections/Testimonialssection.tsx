@@ -32,8 +32,9 @@ export default function TestimonialsSection() {
             </div>
 
             {/* Quote */}
-            <blockquote className="text-[15px] text-slate-600 leading-relaxed flex-1 mb-7 italic">
-              {t.text}
+            <blockquote className="flex-1 mb-7">
+              <p className="text-3xl leading-none font-display text-brand-teal/25 mb-2 select-none">"</p>
+              <p className="text-[15px] text-slate-600 leading-relaxed italic">{t.text}</p>
             </blockquote>
 
             {/* Author */}
@@ -55,7 +56,7 @@ export default function TestimonialsSection() {
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-10">
           {[
             { value: '500+', label: 'Happy Customers' },
-            { value: '4.8★', label: 'Average Rating' },
+            { value: '4.8', label: 'Average Rating' },
             { value: '100%', label: 'Genuine Products' },
             { value: '2yrs+', label: 'Warranty Support' },
           ].map((stat) => (

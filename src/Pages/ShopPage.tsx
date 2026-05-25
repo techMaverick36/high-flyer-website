@@ -197,7 +197,9 @@ export default function ShopPage() {
                       {cat.image ? (
                         <img src={cat.image} alt="" className="w-full h-full object-cover" />
                       ) : (
-                        <div className="w-full h-full bg-slate-100 flex items-center justify-center text-xs">{cat.icon}</div>
+                        <div className="w-full h-full bg-slate-100 flex items-center justify-center text-[10px] font-bold text-slate-400">
+                          {cat.label.charAt(0)}
+                        </div>
                       )}
                     </div>
                     <span className="flex-1">{cat.label}</span>
@@ -341,7 +343,9 @@ export default function ShopPage() {
               </div>
             ) : filtered.length === 0 ? (
               <div className="card bg-white p-16 text-center">
-                <div className="text-7xl mb-8 grayscale opacity-50">🔍</div>
+                <div className="w-20 h-20 rounded-full bg-slate-100 flex items-center justify-center mx-auto mb-8">
+                  <Search size={32} className="text-slate-400" />
+                </div>
                 <h3 className="font-display font-bold text-2xl text-slate-900 mb-4">
                   No appliances found
                 </h3>
