@@ -5,6 +5,7 @@ import { categories } from '../utils/products'
 import { useGetAllProductsQuery, useGetAllCategoriesQuery } from '../store/api/sanityApi'
 import type { FilterState, ProductCategory, SortOption } from '../utils/types'
 import ProductCard from '../components/ProductCard'
+import SEO from '../components/SEO'
 import clsx from 'clsx'
 
 const sortOptions: { value: SortOption; label: string }[] = [
@@ -119,6 +120,11 @@ export default function ShopPage() {
 
   return (
     <div className="pt-[112px] min-h-screen bg-background">
+      <SEO
+        title="Shop All Appliances"
+        path="/shop"
+        description="Browse our full range of genuine home appliances in Kampala — refrigerators, TVs, washing machines, cookers, air fryers and more. All products carry manufacturer warranty."
+      />
       {/* Page header */}
       <div className="bg-white border-b border-slate-100">
         <div className="section-container py-12 md:py-16">

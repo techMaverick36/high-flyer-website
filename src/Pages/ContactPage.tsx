@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { Phone, Mail, MessageCircle, MapPin, Send, Check } from 'lucide-react'
 import { companyInfo } from '../utils/company'
 import Section from '../components/Section'
+import SEO from '../components/SEO'
 import clsx from 'clsx'
 
 interface FormData {
@@ -63,7 +64,13 @@ export default function ContactPage() {
   }
 
   return (
-    <div className="pt-[112px]">
+    <div className="pt-28">
+      <SEO
+        title="Contact Us"
+        path="/contact"
+        description="Get in touch with High Flyer Trading CO LTD. Call, WhatsApp, or email us — or visit our showroom at Aponye Shopping Centre, Kampala. We're here to help."
+        image="/home2.jpg"
+      />
       {/* Header */}
       <section className="relative py-20 md:py-32 overflow-hidden">
         {/* Background image */}
@@ -234,7 +241,7 @@ export default function ContactPage() {
               <div className="absolute top-0 right-0 w-32 h-32 bg-brand-teal opacity-20 blur-3xl rounded-full" />
               
               <div className="relative z-10">
-                <span className="section-label text-teal-400 !mb-4">Our Locations</span>
+                <span className="section-label text-teal-400 mb-4!">Our Locations</span>
                 <h3 className="font-display font-bold text-3xl mb-8 tracking-tight">
                   Visit Us In Person
                 </h3>

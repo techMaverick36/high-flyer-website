@@ -2,11 +2,18 @@ import { Link } from 'react-router-dom'
 import { ArrowRight, MapPin, Target, Eye, Heart, Clock, Check } from 'lucide-react'
 import { companyInfo } from '../utils/company'
 import Section, { SectionHeader } from '../components/Section'
+import SEO from '../components/SEO'
 import clsx from 'clsx'
 
 export default function AboutPage() {
   return (
     <div className="pt-28">
+      <SEO
+        title="About Us"
+        path="/about"
+        description="Learn the story behind High Flyer Trading CO LTD — a Ugandan business built to bring genuine, high-quality home appliances within reach of every family, with honest service."
+        image="/home2.jpg"
+      />
       {/* Hero */}
       <section className="relative py-20 md:py-32 overflow-hidden">
         <div
@@ -172,7 +179,7 @@ export default function AboutPage() {
       </Section>
 
       {/* CTA */}
-      <Section className="!p-0">
+      <Section className="p-0!">
         <div className="section-container pb-20">
           <div className="bg-linear-to-br from-brand-orange to-orange-700 rounded-[40px] p-12 md:p-20 text-center relative overflow-hidden shadow-2xl">
             <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 blur-3xl rounded-full translate-x-1/2 -translate-y-1/2" />

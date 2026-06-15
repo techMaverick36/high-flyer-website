@@ -15,6 +15,7 @@ import {
 import { useCartStore } from '../store/Cartstore'
 import { formatPrice, openWhatsAppOrder, openEmailOrder } from '../utils'
 import type { CustomerInfo } from '../utils/types'
+import SEO from '../components/SEO'
 import clsx from 'clsx'
 
 const defaultCustomer: CustomerInfo = {
@@ -70,12 +71,12 @@ export default function CartPage() {
 
   if (sent) {
     return (
-      <div className="pt-[112px] min-h-screen bg-background flex items-center justify-center">
+      <div className="pt-28 min-h-screen bg-background flex items-center justify-center">
         <div className="section-container">
           <div className="card max-w-xl mx-auto p-12 md:p-16 text-center relative overflow-hidden">
             <div className="absolute top-0 left-1/2 -translate-x-1/2 w-64 h-64 bg-green-500/5 blur-[80px] rounded-full" />
             <div className="relative z-10">
-              <div className="w-24 h-24 bg-green-50 rounded-[32px] flex items-center justify-center mx-auto mb-8 border border-green-100 shadow-lg shadow-green-500/10">
+              <div className="w-24 h-24 bg-green-50 rounded-4xl flex items-center justify-center mx-auto mb-8 border border-green-100 shadow-lg shadow-green-500/10">
                 <Check size={48} className="text-green-500" strokeWidth={3} />
               </div>
               <h2 className="font-display font-bold text-4xl text-slate-900 mb-4 tracking-tight">Order Sent!</h2>
@@ -94,7 +95,8 @@ export default function CartPage() {
   }
 
   return (
-    <div className="pt-[112px] min-h-screen bg-background">
+    <div className="pt-28 min-h-screen bg-background">
+      <SEO title="Your Cart" path="/cart" noIndex />
       <div className="section-container py-12 md:py-20">
         {/* Header */}
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-8 mb-12">
@@ -115,7 +117,7 @@ export default function CartPage() {
               { num: 2, label: 'Details', step: 'details' },
             ].map((s, i) => (
               <div key={s.label} className="flex items-center">
-                {i > 0 && <div className="w-8 h-[2px] bg-slate-100 mx-2" />}
+                {i > 0 && <div className="w-8 h-0.5 bg-slate-100 mx-2" />}
                 <div className={clsx(
                   "flex items-center gap-3 px-4 py-2 rounded-xl transition-all duration-300",
                   step === s.step ? "bg-brand-teal text-white shadow-lg shadow-brand-teal/20" : "text-slate-400"

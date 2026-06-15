@@ -19,6 +19,7 @@ import { companyInfo } from '../utils/company'
 import { formatPrice, getDiscountPercent } from '../utils'
 import StarRating from '../components/StarRating'
 import ProductCard from '../components/ProductCard'
+import SEO from '../components/SEO'
 import clsx from 'clsx'
 
 export default function ProductDetailPage() {
@@ -42,7 +43,7 @@ export default function ProductDetailPage() {
 
   if (loading) {
     return (
-      <div className="pt-[112px] min-h-screen flex flex-col items-center justify-center text-slate-400 bg-background">
+      <div className="pt-28 min-h-screen flex flex-col items-center justify-center text-slate-400 bg-background">
         <Loader2 size={48} className="animate-spin mb-4 text-brand-teal" />
         <p className="font-medium text-lg">Loading product details...</p>
       </div>
@@ -67,7 +68,14 @@ export default function ProductDetailPage() {
   )
 
   return (
-    <div className="pt-[112px] min-h-screen bg-background">
+    <div className="pt-28 min-h-screen bg-background">
+      <SEO
+        title={product.name}
+        path={`/product/${product.slug}`}
+        description={product.shortDescription || `Buy the ${product.name} at High Flyer Trading CO LTD. ${product.warranty ? `Comes with ${product.warranty}.` : ''} Visit our showroom in Kampala or order via WhatsApp.`}
+        image={product.images[0]?.url}
+        type="product"
+      />
       {/* Breadcrumb */}
       <div className="bg-white border-b border-slate-100">
         <div className="section-container py-4 flex items-center gap-3 text-sm font-medium">
@@ -75,7 +83,7 @@ export default function ProductDetailPage() {
           <ChevronRight size={14} className="text-slate-300" />
           <Link to="/shop" className="text-slate-400 hover:text-brand-teal transition-colors">Shop</Link>
           <ChevronRight size={14} className="text-slate-300" />
-          <span className="text-slate-900 truncate max-w-[200px]">{product.name}</span>
+          <span className="text-slate-900 truncate max-w-50">{product.name}</span>
         </div>
       </div>
 
@@ -84,7 +92,7 @@ export default function ProductDetailPage() {
           {/* ── Images ── */}
           <div className="space-y-6">
             {/* Main image */}
-            <div className="aspect-square rounded-[32px] overflow-hidden bg-white border border-slate-100 shadow-card group">
+            <div className="aspect-square rounded-4xl overflow-hidden bg-white border border-slate-100 shadow-card group">
               <img
                 src={product.images[selectedImage]?.url}
                 alt={product.images[selectedImage]?.alt || product.name}
@@ -144,7 +152,7 @@ export default function ProductDetailPage() {
                 reviewCount={product.reviewCount}
                 size={18}
               />
-              <div className="h-4 w-[1px] bg-slate-200" />
+              <div className="h-4 w-px bg-slate-200" />
               <span className="text-sm font-bold text-brand-teal uppercase tracking-widest">{product.category.title}</span>
             </div>
 
