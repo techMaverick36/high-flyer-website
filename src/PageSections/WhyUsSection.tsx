@@ -17,10 +17,10 @@ export default function WhyUsSection() {
             key={item.title}
             className="card card-hover p-10 group relative overflow-hidden"
           >
-            <span className="absolute top-4 right-5 font-display text-7xl font-black text-slate-100 select-none leading-none pointer-events-none">
+            <span className="absolute top-4 right-5 font-display text-7xl font-bold text-slate-100 select-none leading-none pointer-events-none">
               {String(index + 1).padStart(2, '0')}
             </span>
-            <h3 className="font-display font-bold text-slate-900 mb-4 text-xl group-hover:text-brand-teal transition-colors relative z-10">{item.title}</h3>
+            <h3 className="font-body font-semibold text-slate-900 mb-4 text-xl group-hover:text-brand-teal transition-colors relative z-10">{item.title}</h3>
             <p className="text-[15px] text-slate-500 font-medium leading-relaxed relative z-10">{item.description}</p>
           </div>
         ))}

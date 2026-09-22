@@ -101,7 +101,7 @@ export default function CartPage() {
         {/* Header */}
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-8 mb-12">
           <div>
-            <Link to="/shop" className="inline-flex items-center gap-2 text-sm font-bold text-slate-400 hover:text-brand-teal transition-all uppercase tracking-widest mb-4">
+            <Link to="/shop" className="inline-flex items-center gap-2 text-sm font-bold text-slate-400 hover:text-brand-teal transition-all uppercase tracking-wider mb-4">
               <ArrowLeft size={16} strokeWidth={3} />
               Back to Shop
             </Link>
@@ -123,12 +123,12 @@ export default function CartPage() {
                   step === s.step ? "bg-brand-teal text-white shadow-lg shadow-brand-teal/20" : "text-slate-400"
                 )}>
                   <div className={clsx(
-                    "w-6 h-6 rounded-lg flex items-center justify-center text-[10px] font-black",
+                    "w-6 h-6 rounded-lg flex items-center justify-center text-[10px] font-semibold",
                     step === s.step ? "bg-white text-brand-teal" : "bg-slate-100 text-slate-400"
                   )}>
                     {step === 'details' && s.step === 'cart' ? <Check size={12} strokeWidth={4} /> : s.num}
                   </div>
-                  <span className="text-xs font-bold uppercase tracking-widest leading-none">{s.label}</span>
+                  <span className="text-xs font-bold uppercase tracking-wider leading-none">{s.label}</span>
                 </div>
               </div>
             ))}
@@ -145,49 +145,51 @@ export default function CartPage() {
             <Link to="/shop" className="btn btn-primary px-10 py-4 shadow-xl shadow-brand-teal/20">Browse Collection</Link>
           </div>
         ) : (
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 xl:gap-12 items-start">
             {/* Items / Form */}
-            <div className="lg:col-span-8 space-y-8">
+            <div className="lg:col-span-7 xl:col-span-8 space-y-8">
               {step === 'cart' ? (
                 <div className="card bg-white overflow-hidden shadow-2xl shadow-slate-200/50">
                   <div className="divide-y divide-slate-50">
                     {items.map((item) => (
-                      <div key={item.product.id} className="flex flex-col sm:flex-row gap-6 p-8 group">
+                      <div key={item.product.id} className="flex flex-col sm:flex-row gap-5 sm:gap-6 p-5 sm:p-8 group">
                         <Link to={`/product/${item.product.slug}`} className="shrink-0 relative">
                           <img
                             src={getImageSrc(item)}
                             alt={getImageAlt(item)}
-                            className="w-32 h-32 object-cover rounded-3xl bg-slate-50 border border-slate-100 group-hover:scale-105 transition-transform duration-500"
+                            className="w-24 h-24 sm:w-32 sm:h-32 object-cover rounded-3xl bg-slate-50 border border-slate-100 group-hover:scale-105 transition-transform duration-500"
                           />
                         </Link>
                         <div className="flex-1 min-w-0 flex flex-col justify-center">
-                          <div className="flex justify-between items-start gap-4 mb-2">
+                          <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-1 sm:gap-4 mb-2">
                             <Link
                               to={`/product/${item.product.slug}`}
-                              className="font-display font-bold text-slate-900 hover:text-brand-teal transition-colors text-xl leading-tight"
+                              className="font-body font-semibold text-slate-900 hover:text-brand-teal transition-colors text-lg sm:text-xl leading-tight min-w-0"
                             >
                               {item.product.name}
                             </Link>
-                            <p className="font-display font-bold text-brand-teal text-xl">
+                            <p className="font-body font-semibold text-brand-teal text-lg sm:text-xl tabular-nums whitespace-nowrap sm:shrink-0">
                               {formatPrice(item.product.price * item.quantity)}
                             </p>
                           </div>
-                          <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-6 flex items-center gap-2">
+                          <p className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-5 sm:mb-6 flex items-center gap-2">
                             <Shield size={14} className="text-brand-teal" />
                             {item.product.warranty || '1 Year Warranty'}
                           </p>
-                          <div className="flex items-center justify-between mt-auto">
-                            <div className="flex items-center bg-slate-100 rounded-xl p-1">
+                          <div className="flex items-center justify-between gap-3 flex-wrap mt-auto">
+                            <div className="flex items-center bg-slate-100 rounded-xl p-1 shrink-0">
                               <button
                                 onClick={() => updateQuantity(item.product.id, item.quantity - 1)}
+                                aria-label="Decrease quantity"
                                 className="w-9 h-9 rounded-lg bg-white shadow-sm flex items-center justify-center hover:text-brand-teal transition-all disabled:opacity-50"
                                 disabled={item.quantity <= 1}
                               >
                                 <Minus size={14} strokeWidth={3} />
                               </button>
-                              <span className="w-10 text-center font-display font-bold text-slate-700">{item.quantity}</span>
+                              <span className="w-10 text-center font-body font-semibold text-slate-700">{item.quantity}</span>
                               <button
                                 onClick={() => updateQuantity(item.product.id, item.quantity + 1)}
+                                aria-label="Increase quantity"
                                 className="w-9 h-9 rounded-lg bg-white shadow-sm flex items-center justify-center hover:text-brand-teal transition-all"
                               >
                                 <Plus size={14} strokeWidth={3} />
@@ -195,12 +197,13 @@ export default function CartPage() {
                             </div>
                             <button
                               onClick={() => removeItem(item.product.id)}
-                              className="text-xs font-bold text-red-400 hover:text-red-600 transition-all uppercase tracking-widest flex items-center gap-2 group/btn"
+                              className="text-xs font-bold text-red-400 hover:text-red-600 transition-all uppercase tracking-wider flex items-center gap-2 shrink-0 group/btn"
                             >
                               <div className="w-8 h-8 rounded-lg bg-red-50 flex items-center justify-center group-hover/btn:bg-red-500 group-hover/btn:text-white transition-all">
                                 <Trash2 size={14} />
                               </div>
-                              Remove Item
+                              <span className="hidden sm:inline">Remove Item</span>
+                              <span className="sm:hidden">Remove</span>
                             </button>
                           </div>
                         </div>
@@ -210,7 +213,7 @@ export default function CartPage() {
                   <div className="p-6 bg-slate-50/50 border-t border-slate-50 flex justify-end">
                     <button
                       onClick={clearCart}
-                      className="text-xs font-bold text-slate-400 hover:text-red-500 transition-colors flex items-center gap-2 uppercase tracking-widest"
+                      className="text-xs font-bold text-slate-400 hover:text-red-500 transition-colors flex items-center gap-2 uppercase tracking-wider"
                     >
                       <Trash2 size={14} /> Clear Entire Cart
                     </button>
@@ -233,7 +236,7 @@ export default function CartPage() {
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 mb-8">
                     <div>
-                      <label className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-3 block ml-1">Full Name</label>
+                      <label className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3 block ml-1">Full Name</label>
                       <input
                         type="text"
                         placeholder="Grace Nakato"
@@ -243,7 +246,7 @@ export default function CartPage() {
                       />
                     </div>
                     <div>
-                      <label className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-3 block ml-1">Phone Number</label>
+                      <label className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3 block ml-1">Phone Number</label>
                       <input
                         type="tel"
                         placeholder="+256 700 000000"
@@ -254,7 +257,7 @@ export default function CartPage() {
                     </div>
                   </div>
                   <div className="mb-8">
-                    <label className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-3 block ml-1">Email Address</label>
+                    <label className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3 block ml-1">Email Address</label>
                     <input
                       type="email"
                       placeholder="grace@email.com"
@@ -264,7 +267,7 @@ export default function CartPage() {
                     />
                   </div>
                   <div className="mb-8">
-                    <label className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-3 block ml-1">Delivery Address</label>
+                    <label className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3 block ml-1">Delivery Address</label>
                     <input
                       type="text"
                       placeholder="e.g. Plot 12, Ntinda Road, Kampala"
@@ -274,7 +277,7 @@ export default function CartPage() {
                     />
                   </div>
                   <div>
-                    <label className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-3 block ml-1">Order Notes</label>
+                    <label className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3 block ml-1">Order Notes</label>
                     <textarea
                       rows={4}
                       placeholder="Preferred delivery time, special requests..."
@@ -288,40 +291,42 @@ export default function CartPage() {
             </div>
 
             {/* Order Summary */}
-            <div className="lg:col-span-4">
-              <div className="card bg-white p-8 sticky top-34 shadow-2xl shadow-slate-200/50 border-2 border-slate-50">
+            <div className="lg:col-span-5 xl:col-span-4">
+              <div className="card bg-white p-6 xl:p-8 sticky top-34 shadow-2xl shadow-slate-200/50 border-2 border-slate-50">
                 <h3 className="font-display font-bold text-2xl text-slate-900 mb-8 tracking-tight">Order Summary</h3>
                 
                 <div className="space-y-4 mb-8 max-h-75 overflow-y-auto pr-2 custom-scrollbar">
                   {items.map((item) => (
-                    <div key={item.product.id} className="flex justify-between items-start group">
-                      <div className="min-w-0">
-                        <p className="font-bold text-slate-700 text-sm leading-tight truncate group-hover:text-brand-teal transition-colors">
-                          {item.product.name}
-                        </p>
-                        <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1">
+                    <div key={item.product.id} className="group">
+                      <p className="font-bold text-slate-700 text-sm leading-snug line-clamp-2 break-words group-hover:text-brand-teal transition-colors">
+                        {item.product.name}
+                      </p>
+                      <div className="flex justify-between items-baseline gap-3 mt-1">
+                        <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider shrink-0">
                           Qty: {item.quantity}
-                        </p>
+                        </span>
+                        <span className="font-bold text-slate-900 text-sm tabular-nums whitespace-nowrap">
+                          {formatPrice(item.product.price * item.quantity)}
+                        </span>
                       </div>
-                      <span className="font-bold text-slate-900 text-sm shrink-0 ml-4">
-                        {formatPrice(item.product.price * item.quantity)}
-                      </span>
                     </div>
                   ))}
                 </div>
 
                 <div className="space-y-4 pt-8 border-t-2 border-slate-50">
-                  <div className="flex justify-between items-center text-slate-500">
-                    <span className="text-sm font-bold uppercase tracking-widest">Subtotal</span>
-                    <span className="font-bold">{formatPrice(total)}</span>
+                  <div className="flex justify-between items-baseline gap-3 flex-wrap text-slate-500">
+                    <span className="text-xs font-bold uppercase tracking-wider">Subtotal</span>
+                    <span className="font-bold text-sm tabular-nums whitespace-nowrap">{formatPrice(total)}</span>
                   </div>
-                  <div className="flex justify-between items-center text-slate-500">
-                    <span className="text-sm font-bold uppercase tracking-widest">Delivery</span>
-                    <span className="text-brand-teal font-black text-xs uppercase tracking-tighter">Calculated Later</span>
+                  <div className="flex justify-between items-baseline gap-3 flex-wrap text-slate-500">
+                    <span className="text-xs font-bold uppercase tracking-wider">Delivery</span>
+                    <span className="text-brand-teal font-semibold text-xs uppercase tracking-tight text-right">Calculated Later</span>
                   </div>
-                  <div className="flex justify-between items-center pt-6 border-t-2 border-slate-50">
-                    <span className="font-display font-bold text-xl text-slate-900">Total Price</span>
-                    <span className="font-display font-bold text-3xl text-brand-teal tracking-tight">{formatPrice(total)}</span>
+                  <div className="pt-6 border-t-2 border-slate-50">
+                    <span className="font-body font-semibold text-lg text-slate-900 block">Total Price</span>
+                    <span className="font-display font-bold text-3xl text-brand-teal tracking-tight tabular-nums block mt-1 break-words">
+                      {formatPrice(total)}
+                    </span>
                   </div>
                 </div>
 
@@ -331,7 +336,7 @@ export default function CartPage() {
                       onClick={() => setStep('details')}
                       className="btn btn-primary w-full py-5 text-lg shadow-xl shadow-brand-teal/20 gap-3 group"
                     >
-                      <span className="uppercase tracking-widest font-black">Continue</span>
+                      <span className="uppercase tracking-wider font-semibold">Continue</span>
                       <ChevronRight size={20} className="transition-transform group-hover:translate-x-1" />
                     </button>
                   ) : (
@@ -343,7 +348,7 @@ export default function CartPage() {
                         <div className="w-12 h-12 rounded-2xl bg-white/20 flex items-center justify-center transition-transform group-hover:rotate-12">
                           <MessageCircle size={28} />
                         </div>
-                        <span className="text-xs font-black uppercase tracking-widest">WhatsApp</span>
+                        <span className="text-xs font-semibold uppercase tracking-wider">WhatsApp</span>
                       </button>
                       <button
                         onClick={handleEmail}
@@ -352,7 +357,7 @@ export default function CartPage() {
                         <div className="w-12 h-12 rounded-2xl bg-teal-50 flex items-center justify-center transition-transform group-hover:-rotate-12">
                           <Mail size={28} />
                         </div>
-                        <span className="text-xs font-black uppercase tracking-widest">Email Order</span>
+                        <span className="text-xs font-semibold uppercase tracking-wider">Email Order</span>
                       </button>
                     </div>
                   )}
@@ -360,7 +365,7 @@ export default function CartPage() {
                   {step === 'details' && (
                     <button
                       onClick={() => setStep('cart')}
-                      className="w-full py-2 text-[10px] font-black text-slate-400 hover:text-slate-600 transition-all uppercase tracking-[0.2em]"
+                      className="w-full py-2 text-[10px] font-semibold text-slate-400 hover:text-slate-600 transition-all uppercase tracking-wider"
                     >
                       ← Back to Cart
                     </button>

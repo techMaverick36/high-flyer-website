@@ -6,8 +6,8 @@ import { companyInfo } from "../utils/company";
 import clsx from "clsx";
 
 const navLinks = [
-	{ label: "Home", path: "/" },
-	{ label: "Shop", path: "/shop" },
+	{ label: "Home", path: "/home" },
+	{ label: "Shop", path: "/" },
 	{ label: "About", path: "/about" },
 	{ label: "Contact", path: "/contact" },
 ];

@@ -82,12 +82,12 @@ export default function CartDrawer() {
       {/* Drawer */}
       <div className="fixed top-0 right-0 bottom-0 w-full max-w-[420px] bg-white z-[70] flex flex-col shadow-2xl">
         {/* Header */}
-        <div className="flex items-center justify-between px-8 py-6">
+        <div className="flex items-center justify-between px-6 py-5 shrink-0">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-xl bg-teal-50 flex items-center justify-center text-brand-teal">
               <ShoppingBag size={20} />
             </div>
-            <h2 className="font-display font-bold text-xl text-slate-900">
+            <h2 className="font-body font-semibold text-xl text-slate-900">
               {step === 'cart' ? 'Your Cart' : 'Checkout'}
             </h2>
           </div>
@@ -100,7 +100,7 @@ export default function CartDrawer() {
         </div>
 
         {/* Step indicator */}
-        <div className="flex px-8 py-2 gap-3 mb-4">
+        <div className="flex px-6 pb-4 gap-3 shrink-0">
           {['cart', 'customer'].map((s, i) => {
             const isActive = step === s || (step === 'confirm' && i === 1);
             const isPast = (step === 'customer' && i === 0);
@@ -119,14 +119,14 @@ export default function CartDrawer() {
         {/* ── STEP 1: Cart Items ── */}
         {step === 'cart' && (
           <>
-            <div className="flex-1 overflow-y-auto px-8 py-4">
+            <div className="flex-1 min-h-0 overflow-y-auto px-6 py-2">
               {items.length === 0 ? (
                 <div className="flex flex-col items-center justify-center h-full text-center gap-6">
                   <div className="w-20 h-20 rounded-[28px] bg-slate-100 flex items-center justify-center">
                     <ShoppingBag size={32} className="text-slate-400" />
                   </div>
                   <div>
-                    <h3 className="font-display font-bold text-slate-900 text-xl mb-2">Your cart is empty</h3>
+                    <h3 className="font-body font-semibold text-slate-900 text-xl mb-2">Your cart is empty</h3>
                     <p className="text-sm text-slate-500 max-w-[200px] mx-auto leading-relaxed">Looks like you haven't added any appliances yet.</p>
                   </div>
                   <button onClick={closeCart} className="btn btn-primary px-8 py-3">
@@ -134,81 +134,80 @@ export default function CartDrawer() {
                   </button>
                 </div>
               ) : (
-                <div className="space-y-6">
+                <ul className="divide-y divide-slate-100">
                   {items.map((item) => (
-                    <div
+                    <li
                       key={item.product.id}
-                      className="flex gap-4 group"
+                      className="flex gap-4 py-4 group"
                     >
-                      <div className="relative w-20 h-20 rounded-2xl overflow-hidden bg-slate-50 border border-slate-100 shrink-0">
+                      <div className="relative w-16 h-16 rounded-2xl overflow-hidden bg-slate-50 border border-slate-100 shrink-0">
                         <img
                           src={getImageSrc(item)}
                           alt={getImageAlt(item)}
                           className="w-full h-full object-cover"
                         />
                       </div>
-                      <div className="flex-1 min-w-0 py-1">
-                        <div className="flex justify-between gap-2 mb-1">
-                          <h4 className="text-[15px] font-bold text-slate-900 leading-tight line-clamp-1 group-hover:text-brand-teal transition-colors">
-                            {item.product.name}
-                          </h4>
-                          <p className="text-[15px] font-bold text-brand-teal shrink-0">
-                            {formatPrice(item.product.price * item.quantity)}
-                          </p>
-                        </div>
-                        <p className="text-xs text-slate-400 mb-3 font-medium uppercase tracking-wider">Warranty: {item.product.warranty || '1 Year Warranty'}</p>
-                        <div className="flex items-center justify-between">
-                          <div className="flex items-center bg-slate-100 rounded-lg p-1">
+                      <div className="flex-1 min-w-0">
+                        <h4 className="text-sm font-bold text-slate-900 leading-snug line-clamp-2 group-hover:text-brand-teal transition-colors">
+                          {item.product.name}
+                        </h4>
+                        <p className="text-[10px] text-slate-400 mt-1 font-medium uppercase tracking-wider truncate">
+                          {item.product.warranty || '1 Year Warranty'}
+                        </p>
+                        <div className="flex items-center justify-between gap-x-2 gap-y-2 flex-wrap mt-2">
+                          <div className="flex items-center bg-slate-100 rounded-lg p-1 shrink-0">
                             <button
                               onClick={() => updateQuantity(item.product.id, item.quantity - 1)}
+                              aria-label="Decrease quantity"
                               className="w-7 h-7 rounded-md bg-white shadow-sm flex items-center justify-center hover:text-brand-teal transition-colors disabled:opacity-50"
                               disabled={item.quantity <= 1}
                             >
                               <Minus size={12} strokeWidth={3} />
                             </button>
-                            <span className="text-xs font-bold w-8 text-center text-slate-700">
+                            <span className="text-xs font-bold w-7 text-center text-slate-700">
                               {item.quantity}
                             </span>
                             <button
                               onClick={() => updateQuantity(item.product.id, item.quantity + 1)}
+                              aria-label="Increase quantity"
                               className="w-7 h-7 rounded-md bg-white shadow-sm flex items-center justify-center hover:text-brand-teal transition-colors"
                             >
                               <Plus size={12} strokeWidth={3} />
                             </button>
                           </div>
-                          <button
-                            onClick={() => removeItem(item.product.id)}
-                            className="text-xs font-bold text-red-400 hover:text-red-600 transition-colors uppercase tracking-widest flex items-center gap-1"
-                          >
-                            <Trash2 size={12} />
-                            Remove
-                          </button>
+                          <div className="flex items-center gap-1 ml-auto shrink-0">
+                            <p className="text-sm font-bold text-brand-teal tabular-nums whitespace-nowrap">
+                              {formatPrice(item.product.price * item.quantity)}
+                            </p>
+                            <button
+                              onClick={() => removeItem(item.product.id)}
+                              aria-label={`Remove ${item.product.name} from cart`}
+                              title="Remove"
+                              className="w-7 h-7 rounded-md flex items-center justify-center text-slate-300 hover:text-red-500 hover:bg-red-50 transition-colors shrink-0"
+                            >
+                              <Trash2 size={14} />
+                            </button>
+                          </div>
                         </div>
                       </div>
-                    </div>
+                    </li>
                   ))}
-                </div>
+                </ul>
               )}
             </div>
 
             {items.length > 0 && (
-              <div className="px-8 py-8 border-t border-slate-100 bg-white shadow-[0_-10px_40px_rgba(0,0,0,0.02)]">
-                <div className="space-y-3 mb-8">
-                  <div className="flex items-center justify-between">
-                    <span className="text-slate-500 font-medium">Subtotal</span>
-                    <span className="font-bold text-slate-400">{formatPrice(total)}</span>
-                  </div>
-                  <div className="flex items-center justify-between pt-3 border-t border-slate-50">
-                    <span className="text-slate-900 font-bold text-lg">Order Total</span>
-                    <span className="font-display font-bold text-brand-teal text-2xl">{formatPrice(total)}</span>
-                  </div>
-                  <p className="text-[11px] text-slate-400 bg-slate-50 p-3 rounded-xl leading-relaxed mt-4">
-                    <span className="font-bold text-slate-600">Note:</span> Delivery costs and special discounts will be confirmed by our team after you place the order.
-                  </p>
+              <div className="shrink-0 px-6 py-5 border-t border-slate-100 bg-white shadow-[0_-10px_40px_rgba(0,0,0,0.02)]">
+                <div className="flex items-baseline justify-between gap-3 flex-wrap">
+                  <span className="text-slate-900 font-bold">Order Total</span>
+                  <span className="font-body font-semibold text-brand-teal text-xl tabular-nums">{formatPrice(total)}</span>
                 </div>
+                <p className="text-[11px] text-slate-400 leading-snug mt-1 mb-4">
+                  Delivery costs and discounts are confirmed by our team after you place the order.
+                </p>
                 <button
                   onClick={() => setStep('customer')}
-                  className="btn btn-primary w-full py-4 text-base shadow-lg shadow-brand-teal/20 gap-3"
+                  className="btn btn-primary w-full py-3.5 text-base shadow-lg shadow-brand-teal/20 gap-3"
                 >
                   Place Order <Plus size={18} />
                 </button>
@@ -220,9 +219,9 @@ export default function CartDrawer() {
         {/* ── STEP 2: Customer Info ── */}
         {step === 'customer' && (
           <>
-            <div className="flex-1 overflow-y-auto px-8 py-4 space-y-8">
+            <div className="flex-1 min-h-0 overflow-y-auto px-6 py-4 space-y-8">
               <div>
-                <h3 className="text-sm font-bold text-slate-900 uppercase tracking-widest mb-6">Delivery Details</h3>
+                <h3 className="text-sm font-bold text-slate-900 uppercase tracking-wider mb-6">Delivery Details</h3>
                 <div className="space-y-5">
                   <div>
                     <label className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2 block ml-1">
@@ -291,7 +290,7 @@ export default function CartDrawer() {
               </div>
             </div>
 
-            <div className="px-8 py-8 border-t border-slate-100 bg-white space-y-4">
+            <div className="shrink-0 px-6 py-5 border-t border-slate-100 bg-white space-y-3">
               <button
                 onClick={handleOrderWhatsApp}
                 className="btn btn-orange w-full py-4 text-base shadow-lg shadow-orange-500/20 gap-3"
@@ -308,7 +307,7 @@ export default function CartDrawer() {
               </button>
               <button
                 onClick={() => setStep('cart')}
-                className="text-xs font-bold text-slate-400 hover:text-slate-600 transition-colors w-full text-center py-2 uppercase tracking-widest"
+                className="text-xs font-bold text-slate-400 hover:text-slate-600 transition-colors w-full text-center py-2 uppercase tracking-wider"
               >
                 ← Back to Cart
               </button>

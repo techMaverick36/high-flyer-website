@@ -29,8 +29,8 @@ function Layout() {
       <CartDrawer />
       <main>
         <Routes>
-          <Route path="/" element={<HomePage />} />
-          <Route path="/shop" element={<ShopPage />} />
+          <Route path="/" element={<ShopPage />} />
+          <Route path="/home" element={<HomePage />} />
           <Route path="/product/:slug" element={<ProductDetailPage />} />
           <Route path="/cart" element={<CartPage />} />
           <Route path="/about" element={<AboutPage />} />

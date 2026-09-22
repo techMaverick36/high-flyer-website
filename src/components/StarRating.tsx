@@ -36,9 +36,9 @@ export default function StarRating({
           ))}
         </div>
       </div>
-      <span className="text-sm font-black text-slate-900">{clampedRating.toFixed(1)}</span>
+      <span className="text-sm font-semibold text-slate-900">{clampedRating.toFixed(1)}</span>
       {showCount && reviewCount !== undefined && (
-        <span className="text-xs font-bold text-slate-400 uppercase tracking-widest ml-1">({reviewCount} reviews)</span>
+        <span className="text-xs font-bold text-slate-400 uppercase tracking-wider ml-1">({reviewCount} reviews)</span>
       )}
     </div>
   )

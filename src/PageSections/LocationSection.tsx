@@ -23,13 +23,13 @@ export default function LocationsSection() {
               <div className="absolute right-0 top-0 w-40 h-40 bg-brand-teal/10 rounded-full blur-2xl pointer-events-none" />
               <div className="relative">
                 <span className="text-[10px] font-bold uppercase tracking-[0.15em] text-teal-400 mb-1.5 block">{loc.type}</span>
-                <h3 className="font-display font-bold text-white text-xl group-hover:text-teal-300 transition-colors leading-snug">{loc.name}</h3>
+                <h3 className="font-body font-semibold text-white text-xl group-hover:text-teal-300 transition-colors leading-snug">{loc.name}</h3>
               </div>
               <a
                 href={loc.mapUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="relative flex items-center gap-2 px-4 py-2.5 bg-brand-teal text-white text-[11px] font-bold uppercase tracking-widest rounded-xl hover:bg-teal-600 transition-all shrink-0"
+                className="relative flex items-center gap-2 px-4 py-2.5 bg-brand-teal text-white text-[11px] font-bold uppercase tracking-wider rounded-xl hover:bg-teal-600 transition-all shrink-0"
               >
                 <ExternalLink size={12} /> Directions
               </a>

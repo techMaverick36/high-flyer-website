@@ -26,8 +26,15 @@
     @apply bg-background text-text-main font-body text-[15px] md:text-[16px] leading-[1.7];
   }
 
-  h1, h2, h3, h4, h5, h6 {
+  /* Clash Display is a display face — it only reads well at large sizes.
+     Reserve it for h1/h2; smaller headings use Sora so micro-labels
+     (12–16px h3/h4) don't render as heavy slabs. */
+  h1, h2 {
     @apply font-display font-semibold;
+  }
+
+  h3, h4, h5, h6 {
+    @apply font-body font-semibold;
   }
 }
 
@@ -80,5 +87,51 @@
   /* Section label — orange accent, used sparingly */
   .section-label {
     @apply text-brand-orange font-semibold text-xs uppercase tracking-[0.12em] mb-3 block;
+  }
+
+  /* Small uppercase label. Tracking past ~0.05em destroys word shapes at
+     these sizes, so this caps it — use instead of `uppercase tracking-widest`. */
+  .label-caps {
+    @apply font-body font-semibold uppercase tracking-wider;
+  }
+
+  /* Product/card title — body face, never the display face. Card titles sit
+     at 14–20px where Clash Display reads as a heavy slab. */
+  .card-title {
+    @apply font-body font-semibold text-slate-900 leading-snug;
+  }
+
+  /* Dark surfaces. #0f172a + slate-500 measured 3.75:1 (fails WCAG AA), so
+     the surface is lifted and the muted tone never goes below slate-400. */
+  .surface-dark {
+    @apply bg-[#152033] text-slate-300;
+  }
+
+  .surface-dark-muted {
+    @apply text-slate-400;
+  }
+
+  /* Thin, unobtrusive scrollbar for inner scroll panes (cart summary,
+     category rail). Was referenced before it existed. */
+  .custom-scrollbar {
+    scrollbar-width: thin;
+    scrollbar-color: var(--color-slate-300) transparent;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    @apply bg-slate-200 rounded-full;
+  }
+
+  .custom-scrollbar:hover::-webkit-scrollbar-thumb {
+    @apply bg-slate-300;
   }
 }

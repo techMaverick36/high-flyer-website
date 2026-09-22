@@ -8,7 +8,7 @@ export default function Footer() {
 	const { data: categories = [], isLoading: loading } = useGetAllCategoriesQuery();
 
 	return (
-		<footer className="bg-[#0f172a] text-slate-400">
+		<footer className="bg-[#152033] text-slate-300">
 			{/* Main footer */}
 			<div className="section-container py-20">
 				<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 lg:gap-8">
@@ -21,15 +21,15 @@ export default function Footer() {
 								className="h-24 w-auto"
 							/>
 							<div>
-								<div className="font-display font-bold text-white text-base">
+								<div className="font-body font-semibold text-white text-base">
 									High Flyer
 								</div>
-								<div className="text-[10px] uppercase tracking-wider text-slate-500 font-semibold">
+								<div className="text-[11px] uppercase tracking-wider text-slate-400 font-semibold">
 									Trading CO LTD
 								</div>
 							</div>
 						</Link>
-						<p className="text-sm leading-relaxed mb-8 text-slate-400">
+						<p className="text-sm leading-relaxed mb-8 text-slate-300">
 							Uganda's trusted destination for premium home appliances. Genuine
 							products, expert advice, and reliable after-sales service.
 						</p>
@@ -38,7 +38,7 @@ export default function Footer() {
 								href={companyInfo.socialMedia.facebook}
 								target="_blank"
 								rel="noopener noreferrer"
-								className="w-10 h-10 rounded-xl bg-slate-800/50 hover:bg-brand-teal text-white flex items-center justify-center transition-all duration-300 hover:-translate-y-1"
+								className="w-10 h-10 rounded-xl bg-white/10 hover:bg-brand-teal text-white flex items-center justify-center transition-all duration-300 hover:-translate-y-1"
 								aria-label="Facebook"
 							>
 								<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
@@ -49,7 +49,7 @@ export default function Footer() {
 								href={companyInfo.socialMedia.instagram}
 								target="_blank"
 								rel="noopener noreferrer"
-								className="w-10 h-10 rounded-xl bg-slate-800/50 hover:bg-brand-teal text-white flex items-center justify-center transition-all duration-300 hover:-translate-y-1"
+								className="w-10 h-10 rounded-xl bg-white/10 hover:bg-brand-teal text-white flex items-center justify-center transition-all duration-300 hover:-translate-y-1"
 								aria-label="Instagram"
 							>
 								<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
@@ -63,7 +63,7 @@ export default function Footer() {
 
 					{/* Quick Links */}
 					<div>
-						<h4 className="font-display font-bold text-white mb-6 text-sm uppercase tracking-widest">
+						<h4 className="font-body font-semibold text-white mb-6 text-sm uppercase tracking-wider">
 							Quick Links
 						</h4>
 						<ul className="space-y-4">
@@ -89,12 +89,12 @@ export default function Footer() {
 
 					{/* Categories */}
 					<div>
-						<h4 className="font-display font-bold text-white mb-6 text-sm uppercase tracking-widest">
+						<h4 className="font-body font-semibold text-white mb-6 text-sm uppercase tracking-wider">
 							Categories
 						</h4>
 						<ul className="space-y-4">
 							{loading ? (
-								<li className="flex items-center gap-2 text-sm text-slate-500">
+								<li className="flex items-center gap-2 text-sm text-slate-400">
 									<Loader2 size={14} className="animate-spin" />
 									Loading...
 								</li>
@@ -116,7 +116,7 @@ export default function Footer() {
 
 					{/* Contact */}
 					<div>
-						<h4 className="font-display font-bold text-white mb-6 text-sm uppercase tracking-widest">
+						<h4 className="font-body font-semibold text-white mb-6 text-sm uppercase tracking-wider">
 							Contact
 						</h4>
 						<ul className="space-y-5">
@@ -125,7 +125,7 @@ export default function Footer() {
 									href={`tel:${companyInfo.phone}`}
 									className="flex items-start gap-4 text-sm hover:text-brand-teal transition-colors group"
 								>
-									<div className="w-8 h-8 rounded-lg bg-slate-800/50 flex items-center justify-center shrink-0 group-hover:bg-brand-teal transition-colors">
+									<div className="w-8 h-8 rounded-lg bg-white/10 flex items-center justify-center shrink-0 group-hover:bg-brand-teal transition-colors">
 										<Phone size={14} className="text-white" />
 									</div>
 									<span className="pt-1">{companyInfo.phone}</span>
@@ -136,7 +136,7 @@ export default function Footer() {
 									href={`mailto:${companyInfo.email}`}
 									className="flex items-start gap-4 text-sm hover:text-brand-teal transition-colors group"
 								>
-									<div className="w-8 h-8 rounded-lg bg-slate-800/50 flex items-center justify-center shrink-0 group-hover:bg-brand-teal transition-colors">
+									<div className="w-8 h-8 rounded-lg bg-white/10 flex items-center justify-center shrink-0 group-hover:bg-brand-teal transition-colors">
 										<Mail size={14} className="text-white" />
 									</div>
 									<span className="pt-1">{companyInfo.email}</span>
@@ -150,7 +150,7 @@ export default function Footer() {
 										rel="noopener noreferrer"
 										className="flex items-start gap-4 text-sm hover:text-brand-teal transition-colors group"
 									>
-										<div className="w-8 h-8 rounded-lg bg-slate-800/50 flex items-center justify-center shrink-0 group-hover:bg-brand-teal transition-colors">
+										<div className="w-8 h-8 rounded-lg bg-white/10 flex items-center justify-center shrink-0 group-hover:bg-brand-teal transition-colors">
 											<MapPin size={14} className="text-white" />
 										</div>
 										<span className="pt-1">{loc.address}</span>
@@ -163,9 +163,9 @@ export default function Footer() {
 			</div>
 
 			{/* Bottom bar */}
-			<div className="border-t border-slate-800/50">
+			<div className="border-t border-white/10">
 				<div className="section-container py-8 flex flex-col md:flex-row items-center justify-between gap-6">
-					<p className="text-xs text-slate-500 font-medium">
+					<p className="text-xs text-slate-400 font-medium">
 						© {year} High Flyer Trading CO LTD. All rights reserved.
 					</p>
 					<div className="flex gap-8">
@@ -173,7 +173,7 @@ export default function Footer() {
 							(item) => (
 								<span
 									key={item}
-									className="text-xs text-slate-500 hover:text-teal-400 cursor-pointer transition-colors font-medium"
+									className="text-xs text-slate-400 hover:text-teal-300 cursor-pointer transition-colors font-medium"
 								>
 									{item}
 								</span>

@@ -133,8 +133,8 @@ export default function ContactPage() {
                 <Icon size={28} strokeWidth={2.5} />
               </div>
               <div>
-                <p className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 mb-1">{label}</p>
-                <p className="font-display font-bold text-slate-900 text-lg">{value}</p>
+                <p className="text-[10px] font-semibold uppercase tracking-wider text-slate-400 mb-1">{label}</p>
+                <p className="font-body font-semibold text-slate-900 text-lg">{value}</p>
               </div>
             </a>
           ))}
@@ -164,7 +164,7 @@ export default function ContactPage() {
             <form onSubmit={handleSubmit} className="space-y-8">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
                 <div>
-                  <label className="text-xs font-black text-slate-400 uppercase tracking-widest mb-3 block ml-1">
+                  <label className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3 block ml-1">
                     Full Name
                   </label>
                   <input
@@ -176,7 +176,7 @@ export default function ContactPage() {
                   />
                 </div>
                 <div>
-                  <label className="text-xs font-black text-slate-400 uppercase tracking-widest mb-3 block ml-1">
+                  <label className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3 block ml-1">
                     Phone Number
                   </label>
                   <input
@@ -190,7 +190,7 @@ export default function ContactPage() {
               </div>
 
               <div>
-                <label className="text-xs font-black text-slate-400 uppercase tracking-widest mb-3 block ml-1">
+                <label className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3 block ml-1">
                   Email Address
                 </label>
                 <input
@@ -203,7 +203,7 @@ export default function ContactPage() {
               </div>
 
               <div>
-                <label className="text-xs font-black text-slate-400 uppercase tracking-widest mb-3 block ml-1">
+                <label className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3 block ml-1">
                   Subject
                 </label>
                 <input
@@ -216,7 +216,7 @@ export default function ContactPage() {
               </div>
 
               <div>
-                <label className="text-xs font-black text-slate-400 uppercase tracking-widest mb-3 block ml-1">
+                <label className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3 block ml-1">
                   Message
                 </label>
                 <textarea
@@ -230,18 +230,18 @@ export default function ContactPage() {
 
               <button type="submit" className="btn btn-primary px-12 py-5 text-lg shadow-xl shadow-brand-teal/20 gap-3 group">
                 <Send size={20} className="transition-transform group-hover:translate-x-1 group-hover:-translate-y-1" />
-                <span className="uppercase tracking-widest font-black">Send Message</span>
+                <span className="uppercase tracking-wider font-semibold">Send Message</span>
               </button>
             </form>
           </div>
 
           {/* Locations sidebar */}
           <div className="lg:col-span-5 space-y-8">
-            <div className="card bg-slate-900 p-10 text-white relative overflow-hidden shadow-2xl">
+            <div className="card bg-[#152033] p-8 md:p-10 text-slate-300 relative overflow-hidden shadow-2xl border-0">
               <div className="absolute top-0 right-0 w-32 h-32 bg-brand-teal opacity-20 blur-3xl rounded-full" />
               
               <div className="relative z-10">
-                <span className="section-label text-teal-400 mb-4!">Our Locations</span>
+                <span className="section-label text-teal-300 mb-4!">Our Locations</span>
                 <h3 className="font-display font-bold text-3xl mb-8 tracking-tight">
                   Visit Us In Person
                 </h3>
@@ -257,15 +257,15 @@ export default function ContactPage() {
                           <MapPin size={20} className="text-white" />
                         </div>
                         <div>
-                          <span className="text-[10px] font-black uppercase tracking-[0.2em] text-teal-400 mb-1 block">{loc.type}</span>
-                          <h4 className="font-display font-bold text-white text-xl">
+                          <span className="text-[11px] font-semibold uppercase tracking-wider text-teal-300 mb-1 block">{loc.type}</span>
+                          <h4 className="font-body font-semibold text-white text-xl">
                             {loc.name}
                           </h4>
                         </div>
                       </div>
                       <div className="ml-17 space-y-2">
-                        <p className="text-slate-400 font-medium text-sm leading-relaxed">{loc.address}</p>
-                        <p className="text-xs text-slate-500 font-bold uppercase tracking-widest flex items-center gap-2">
+                        <p className="text-slate-300 text-sm leading-relaxed">{loc.address}</p>
+                        <p className="text-xs text-slate-400 font-semibold uppercase tracking-wider flex items-center gap-2">
                           <Check size={12} className="text-brand-teal" />
                           {loc.hours}
                         </p>
@@ -273,7 +273,7 @@ export default function ContactPage() {
                           href={loc.mapUrl}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="inline-block pt-4 text-xs font-black uppercase tracking-[0.2em] text-brand-teal hover:text-white transition-all"
+                          className="inline-block pt-4 text-xs font-semibold uppercase tracking-wider text-teal-300 hover:text-white transition-all"
                         >
                           Open in Maps →
                         </a>
@@ -284,15 +284,7 @@ export default function ContactPage() {
               </div>
             </div>
 
-            {/* Map Integration Box */}
-            <div className="card p-2 h-64 bg-white shadow-xl">
-              <div className="w-full h-full rounded-2xl bg-teal-50 flex flex-col items-center justify-center border border-teal-100 relative overflow-hidden">
-                <div className="absolute inset-0 opacity-10" style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%230891b2' fill-opacity='1'%3E%3Crect x='0' y='0' width='1' height='40'/%3E%3Crect x='0' y='0' width='40' height='1'/%3E%3C/g%3E%3C/svg%3E")` }} />
-                <MapPin size={48} className="text-brand-teal mb-4 relative z-10" />
-                <p className="text-sm font-black text-slate-900 uppercase tracking-widest relative z-10">Map Integration</p>
-                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-tighter relative z-10">Visit us at Aponye Mall</p>
-              </div>
-            </div>
+         
           </div>
         </div>
       </Section>

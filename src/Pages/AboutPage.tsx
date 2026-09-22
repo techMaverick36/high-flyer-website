@@ -64,7 +64,7 @@ export default function AboutPage() {
               >
                
                 <div className="font-display font-bold text-4xl text-slate-900 mb-2">{s.value}</div>
-                <div className="text-xs font-bold text-slate-400 uppercase tracking-widest">{s.label}</div>
+                <div className="text-xs font-bold text-slate-400 uppercase tracking-wider">{s.label}</div>
               </div>
             ))}
           </div>
@@ -130,7 +130,7 @@ export default function AboutPage() {
                 <Check size={18} className="text-brand-teal" strokeWidth={3} />
               </div>
               <div>
-                <h4 className="font-display font-bold text-slate-900 mb-2 text-xl leading-none">{item.title}</h4>
+                <h4 className="font-body font-semibold text-slate-900 mb-2 text-xl leading-none">{item.title}</h4>
                 <p className="text-slate-500 font-medium leading-relaxed text-[15px]">{item.description}</p>
               </div>
             </div>
@@ -154,13 +154,13 @@ export default function AboutPage() {
               <div className="w-16 h-16 rounded-2xl bg-teal-50 flex items-center justify-center mb-8 shadow-inner">
                 <MapPin size={32} className="text-brand-teal" />
               </div>
-              <span className="text-[10px] font-black uppercase tracking-[0.2em] text-brand-teal mb-4">Official Showroom</span>
+              <span className="text-[10px] font-semibold uppercase tracking-wider text-brand-teal mb-4">Official Showroom</span>
               <h3 className="font-display font-bold text-3xl text-slate-900 mb-4">{loc.name}</h3>
               <p className="text-slate-500 font-medium text-lg mb-8 max-w-md">{loc.address}</p>
               
               <div className="w-full h-px bg-slate-100 mb-8" />
               
-              <div className="flex items-center gap-2 text-slate-400 font-bold uppercase tracking-widest text-xs mb-8">
+              <div className="flex items-center gap-2 text-slate-400 font-bold uppercase tracking-wider text-xs mb-8">
                 <Clock size={16} />
                 <span>{loc.hours}</span>
               </div>
@@ -191,10 +191,10 @@ export default function AboutPage() {
                 Browse our full range of genuine home appliances and place your order directly via WhatsApp.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <Link to="/shop" className="btn bg-white text-brand-orange px-10 py-5 text-lg font-black uppercase tracking-widest hover:bg-orange-50 transition-all shadow-xl shadow-black/10">
+                <Link to="/shop" className="btn bg-white text-brand-orange px-10 py-5 text-lg font-semibold uppercase tracking-wider hover:bg-orange-50 transition-all shadow-xl shadow-black/10">
                   Shop Now
                 </Link>
-                <Link to="/contact" className="btn bg-orange-600/30 text-white border-2 border-white/20 px-10 py-5 text-lg font-black uppercase tracking-widest backdrop-blur-md hover:bg-white/10 transition-all">
+                <Link to="/contact" className="btn bg-orange-600/30 text-white border-2 border-white/20 px-10 py-5 text-lg font-semibold uppercase tracking-wider backdrop-blur-md hover:bg-white/10 transition-all">
                   Contact Us
                 </Link>
               </div>

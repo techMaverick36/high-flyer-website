@@ -97,7 +97,7 @@ export default function ProductCard({ product, className }: ProductCardProps) {
 
         {/* Name */}
         <Link to={`/product/${product.slug}`} className="mb-2">
-          <h3 className="font-display font-bold text-slate-900 text-sm md:text-base leading-snug hover:text-brand-teal transition-colors duration-200 line-clamp-2">
+          <h3 className="card-title text-sm md:text-base hover:text-brand-teal transition-colors duration-200 line-clamp-2">
             {product.name}
           </h3>
         </Link>
@@ -107,8 +107,11 @@ export default function ProductCard({ product, className }: ProductCardProps) {
         </p>
 
         {/* Price */}
-        <div className="flex items-baseline gap-2.5 mb-4">
-          <span className="font-display font-bold text-brand-teal text-lg">
+        {/* Wraps rather than overflowing — cards are narrow in the 2-up
+            mobile grid, where price + struck-through original don't fit on
+            one line. */}
+        <div className="flex items-baseline gap-x-2.5 gap-y-0.5 flex-wrap mb-4">
+          <span className="font-body font-semibold text-brand-teal text-lg tabular-nums">
             {formatPrice(product.price)}
           </span>
           {product.originalPrice && (

@@ -8,7 +8,7 @@ export default function NotFoundPage() {
         <div className="card max-w-2xl mx-auto p-12 md:p-20 text-center relative overflow-hidden">
           <div className="absolute top-0 left-1/2 -translate-x-1/2 w-64 h-64 bg-teal-500/5 blur-[80px] rounded-full" />
           <div className="relative z-10">
-            <div className="text-[120px] font-display font-black text-slate-100 leading-none mb-4 select-none">404</div>
+            <div className="text-[120px] font-display font-bold text-slate-100 leading-none mb-4 select-none">404</div>
             <h1 className="font-display font-bold text-4xl md:text-5xl text-slate-900 mb-6 tracking-tight">
               Page Not Found
             </h1>

@@ -26,16 +26,31 @@ const slides = [
 
 export default function HeroSection() {
   const [current, setCurrent] = useState(0)
+  const [paused, setPaused] = useState(false)
 
   useEffect(() => {
+    // WCAG 2.2.2: auto-advancing content needs a pause mechanism, and
+    // respect the OS "reduce motion" setting by not rotating at all.
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    if (paused || reduceMotion) return
+
     const timer = setInterval(() => {
       setCurrent((prev) => (prev + 1) % slides.length)
-    }, 5000)
+    }, 6000)
     return () => clearInterval(timer)
-  }, [])
+  }, [paused])
 
   return (
-    <section className="relative min-h-screen flex items-center overflow-hidden pt-28">
+    // Capped well below 100vh so the next section peeks above the fold and
+    // signals there is more to scroll to — a full-viewport hero buries the
+    // products on an e-commerce home page.
+    <section
+      className="relative flex items-center overflow-hidden pt-28 min-h-[600px] md:min-h-[68vh] lg:min-h-[70vh] lg:max-h-[760px]"
+      onMouseEnter={() => setPaused(true)}
+      onMouseLeave={() => setPaused(false)}
+      onFocusCapture={() => setPaused(true)}
+      onBlurCapture={() => setPaused(false)}
+    >
 
       {/* ── Background carousel ── */}
       <div className="absolute inset-0" aria-hidden="true">
@@ -59,23 +74,19 @@ export default function HeroSection() {
       </div>
 
       {/* ── Content ── */}
-      <div className="section-container relative z-10 w-full py-24 lg:py-36">
+      <div className="section-container relative z-10 w-full py-14 lg:py-20">
         <div className="max-w-2xl">
 
-          <h1 className="font-display font-bold text-white leading-[1.1] mb-6">
-            <span className="block text-5xl md:text-6xl lg:text-7xl tracking-tight">
-              Premium Home
-            </span>
-            <span className="block text-5xl md:text-6xl lg:text-7xl text-brand-teal">
-              Appliances
-            </span>
-            <span className="block text-5xl md:text-6xl lg:text-7xl tracking-tight">
-              For Every Home
-            </span>
+          {/* No tracking-tight — Clash Display is already tightly spaced, and
+              negative tracking at this size closes up the word gaps. */}
+          <h1 className="font-display font-bold text-white leading-[1.05] mb-5 text-5xl md:text-6xl lg:text-7xl">
+            <span className="block">Premium Home</span>
+            <span className="block text-brand-teal">Appliances</span>
+     
           </h1>
 
-          <p className="text-white/70 text-lg md:text-xl leading-[1.75] mb-10 font-medium">
-            Uganda's most trusted appliance showroom genuine products, honest service, and a team that cares.
+          <p className="text-white/85 text-lg md:text-xl leading-[1.7] mb-8 max-w-xl">
+            Uganda's most trusted appliance showroom — genuine products, honest service, and a team that cares.
           </p>
 
           <div className="flex flex-col sm:flex-row gap-3">

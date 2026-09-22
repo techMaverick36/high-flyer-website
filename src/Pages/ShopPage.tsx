@@ -1,10 +1,18 @@
-import { useState, useMemo, useEffect } from 'react'
+import { useState, useMemo, useEffect, useRef, useCallback } from 'react'
 import { useSearchParams } from 'react-router-dom'
-import { Search, SlidersHorizontal, X, ChevronDown, Loader2, ChevronLeft, ChevronRight } from 'lucide-react'
+import {
+  Search,
+  SlidersHorizontal,
+  X,
+  ChevronDown,
+  Loader2,
+  Check,
+} from 'lucide-react'
 import { categories } from '../utils/products'
 import { useGetAllProductsQuery, useGetAllCategoriesQuery } from '../store/api/sanityApi'
 import type { FilterState, ProductCategory, SortOption } from '../utils/types'
 import ProductCard from '../components/ProductCard'
+import ShopPromoSlider from '../components/ShopPromoSlider'
 import SEO from '../components/SEO'
 import clsx from 'clsx'
 
@@ -16,12 +24,14 @@ const sortOptions: { value: SortOption; label: string }[] = [
 ]
 
 const MAX_PRICE = 7_000_000
-const ITEMS_PER_PAGE = 9
+
+/** 4 columns x 6 rows — one "page" of the infinite scroll. */
+const BATCH_SIZE = 24
 
 export default function ShopPage() {
   const [searchParams, setSearchParams] = useSearchParams()
   const [showFilters, setShowFilters] = useState(false)
-  const [currentPage, setCurrentPage] = useState(1)
+  const [visibleCount, setVisibleCount] = useState(BATCH_SIZE)
 
   const { data: products = [], isLoading: productsLoading } = useGetAllProductsQuery()
   const { data: allCategories = [], isLoading: categoriesLoading } = useGetAllCategoriesQuery()
@@ -36,9 +46,10 @@ export default function ShopPage() {
     search: '',
   })
 
+  // Any filter change restarts the infinite scroll from the first batch.
   const updateFilter = <K extends keyof FilterState>(key: K, value: FilterState[K]) => {
     setFilters((prev) => ({ ...prev, [key]: value }))
-    setCurrentPage(1)
+    setVisibleCount(BATCH_SIZE)
   }
 
   const filtered = useMemo(() => {
@@ -94,22 +105,34 @@ export default function ShopPage() {
       search: '',
     })
     setSearchParams({})
-    setCurrentPage(1)
+    setVisibleCount(BATCH_SIZE)
   }
 
-  const totalPages = Math.ceil(filtered.length / ITEMS_PER_PAGE)
-  const paginated = filtered.slice((currentPage - 1) * ITEMS_PER_PAGE, currentPage * ITEMS_PER_PAGE)
+  // ── Infinite scroll ──────────────────────────────────────
+  const visible = filtered.slice(0, visibleCount)
+  const hasMore = visibleCount < filtered.length
+  const sentinelRef = useRef<HTMLDivElement | null>(null)
+
+  const loadMore = useCallback(() => {
+    setVisibleCount((c) => Math.min(c + BATCH_SIZE, filtered.length))
+  }, [filtered.length])
 
   useEffect(() => {
-    window.scrollTo({ top: 0, behavior: 'smooth' })
-  }, [currentPage])
+    const node = sentinelRef.current
+    if (!node || !hasMore || loading) return
 
-  const getPageNumbers = (): (number | '...')[] => {
-    if (totalPages <= 7) return Array.from({ length: totalPages }, (_, i) => i + 1)
-    if (currentPage <= 4) return [1, 2, 3, 4, 5, '...', totalPages]
-    if (currentPage >= totalPages - 3) return [1, '...', totalPages - 4, totalPages - 3, totalPages - 2, totalPages - 1, totalPages]
-    return [1, '...', currentPage - 1, currentPage, currentPage + 1, '...', totalPages]
-  }
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0]?.isIntersecting) loadMore()
+      },
+      // Start loading before the sentinel is actually on screen so the grid
+      // keeps filling without the user hitting a visible gap.
+      { rootMargin: '600px 0px' }
+    )
+
+    observer.observe(node)
+    return () => observer.disconnect()
+  }, [hasMore, loading, loadMore])
 
   const hasActiveFilters =
     filters.category !== 'all' ||
@@ -118,302 +141,385 @@ export default function ShopPage() {
     filters.inStockOnly ||
     filters.search !== ''
 
-  return (
-    <div className="pt-[112px] min-h-screen bg-background">
-      <SEO
-        title="Shop All Appliances"
-        path="/shop"
-        description="Browse our full range of genuine home appliances in Kampala — refrigerators, TVs, washing machines, cookers, air fryers and more. All products carry manufacturer warranty."
-      />
-      {/* Page header */}
-      <div className="bg-white border-b border-slate-100">
-        <div className="section-container py-12 md:py-16">
-          <span className="section-label">Our Collection</span>
-          <h1 className="text-4xl md:text-5xl font-display font-bold text-slate-900 mb-4 tracking-tight">Shop All Products</h1>
-          <p className="text-slate-500 font-medium">
-            Explore {filtered.length} premium product{filtered.length !== 1 ? 's' : ''} available in our Kampala showroom.
-          </p>
-        </div>
-      </div>
+  // Categories with nothing in them are dead ends — keep them out of the rail.
+  const visibleCategories = allCategories.filter((c) => (c.count ?? 0) > 0)
 
-      <div className="section-container py-12">
-        <div className="flex flex-col lg:flex-row gap-12">
-          {/* ── Sidebar Filters ── */}
-          <aside
+  const activeCategoryLabel =
+    allCategories.find((c) => c.id === filters.category)?.label ??
+    categories.find((c) => c.id === filters.category)?.label
+
+  const categoryRail = (
+    <div className="space-y-1">
+      <button
+        onClick={() => updateFilter('category', 'all')}
+        className={clsx(
+          'w-full text-left px-3 py-2.5 rounded-lg text-sm transition-colors flex items-center justify-between',
+          filters.category === 'all'
+            ? 'bg-teal-50 text-brand-teal font-semibold'
+            : 'text-slate-600 hover:bg-slate-50 font-medium'
+        )}
+      >
+        <span>All Appliances</span>
+        <span className="text-[10px] tabular-nums text-slate-400">{products.length}</span>
+      </button>
+
+      {visibleCategories.map((cat) => (
+        <button
+          key={cat.id}
+          onClick={() => updateFilter('category', cat.id as ProductCategory)}
+          className={clsx(
+            'w-full text-left px-3 py-2 rounded-lg text-sm transition-colors flex items-center gap-3',
+            filters.category === cat.id
+              ? 'bg-teal-50 text-brand-teal font-semibold'
+              : 'text-slate-600 hover:bg-slate-50 font-medium'
+          )}
+        >
+          <span className="w-8 h-8 rounded-md overflow-hidden shrink-0 border border-slate-100 bg-slate-50">
+            {cat.image ? (
+              <img src={cat.image} alt="" className="w-full h-full object-cover" />
+            ) : (
+              <span className="w-full h-full flex items-center justify-center text-[10px] font-semibold text-slate-400">
+                {cat.label.charAt(0)}
+              </span>
+            )}
+          </span>
+          <span className="flex-1 min-w-0 truncate">{cat.label}</span>
+          <span
             className={clsx(
-              'w-72 shrink-0 space-y-10',
-              'hidden lg:block',
-              showFilters && '!block fixed inset-0 z-[100] bg-white p-8 overflow-y-auto'
+              'text-[10px] tabular-nums px-1.5 py-0.5 rounded',
+              filters.category === cat.id
+                ? 'bg-brand-teal text-white'
+                : 'bg-slate-100 text-slate-400'
             )}
           >
-            {/* Mobile close */}
-            {showFilters && (
-              <div className="flex items-center justify-between lg:hidden mb-8">
-                <h2 className="font-display font-bold text-2xl">Filters</h2>
-                <button onClick={() => setShowFilters(false)} className="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center">
-                  <X size={24} />
-                </button>
-              </div>
-            )}
+            {cat.count}
+          </span>
+        </button>
+      ))}
+    </div>
+  )
 
-            {/* Search (Moved to sidebar for desktop) */}
-            <div>
-              <h3 className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-4 ml-1">Search</h3>
-              <div className="relative">
-                <Search size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
-                <input
-                  type="text"
-                  placeholder="What are you looking for?"
-                  value={filters.search}
-                  onChange={(e) => updateFilter('search', e.target.value)}
-                  className="input-field w-full pl-12 py-3"
-                />
-              </div>
+  return (
+    <div className="pt-24 md:pt-28 min-h-screen bg-background">
+      <SEO
+        title="Shop All Appliances"
+        path="/"
+        description="Browse our full range of genuine home appliances in Kampala — refrigerators, TVs, washing machines, cookers, air fryers and more. All products carry manufacturer warranty."
+      />
+
+      {/* ══ Search + filter toolbar (sticky, marketplace style) ══ */}
+      <div className="sticky top-24 md:top-28 z-40 bg-white border-b border-slate-100 shadow-sm">
+        <div className="section-container py-3">
+          <div className="flex items-center gap-3">
+            <div className="relative flex-1 min-w-0">
+              <Search
+                size={18}
+                className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none"
+              />
+              <input
+                type="search"
+                aria-label="Search appliances"
+                placeholder="Search appliances, brands, models…"
+                value={filters.search}
+                onChange={(e) => updateFilter('search', e.target.value)}
+                className="input-field w-full pl-12 pr-4 py-3 text-sm"
+              />
             </div>
 
-            {/* Category */}
-            <div>
-              <h3 className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-4 ml-1">Categories</h3>
-              <div className="space-y-1 card p-2 bg-white/50">
+            <div className="relative shrink-0 hidden sm:block">
+              <select
+                aria-label="Sort products"
+                value={filters.sort}
+                onChange={(e) => updateFilter('sort', e.target.value as SortOption)}
+                className="input-field appearance-none cursor-pointer py-3 pl-4 pr-10 text-sm font-medium text-slate-700"
+              >
+                {sortOptions.map((opt) => (
+                  <option key={opt.value} value={opt.value}>
+                    Sort: {opt.label}
+                  </option>
+                ))}
+              </select>
+              <ChevronDown
+                size={14}
+                className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none"
+              />
+            </div>
+
+            <button
+              onClick={() => setShowFilters((v) => !v)}
+              aria-expanded={showFilters}
+              className={clsx(
+                'btn shrink-0 px-4 py-3 text-sm gap-2 border',
+                showFilters || hasActiveFilters
+                  ? 'bg-teal-50 border-teal-100 text-brand-teal'
+                  : 'bg-white border-slate-200 text-slate-700 hover:bg-slate-50'
+              )}
+            >
+              <SlidersHorizontal size={16} />
+              <span className="hidden sm:inline">Filters</span>
+            </button>
+          </div>
+
+          {/* Active filter chips */}
+          {hasActiveFilters && (
+            <div className="flex items-center gap-2 flex-wrap mt-3">
+              {filters.category !== 'all' && activeCategoryLabel && (
                 <button
                   onClick={() => updateFilter('category', 'all')}
-                  className={clsx(
-                    'w-full text-left px-4 py-3 rounded-xl text-sm transition-all duration-200 flex items-center justify-between group',
-                    filters.category === 'all'
-                      ? 'bg-teal-50 text-brand-teal font-bold'
-                      : 'text-slate-600 hover:bg-slate-50 font-medium'
-                  )}
+                  className="px-3 py-1.5 bg-teal-50 text-brand-teal text-[11px] font-semibold uppercase tracking-wider rounded-lg border border-teal-100 flex items-center gap-2"
                 >
-                  <span>All Appliances</span>
-                  {filters.category === 'all' && <div className="w-1.5 h-1.5 rounded-full bg-brand-teal" />}
+                  {activeCategoryLabel}
+                  <X size={12} />
                 </button>
-                <div className="h-[1px] bg-slate-100 my-1 mx-2" />
-                {allCategories.map((cat) => (
-                  <button
-                    key={cat.id}
-                    onClick={() => updateFilter('category', cat.id as ProductCategory)}
-                    className={clsx(
-                      'w-full text-left px-4 py-2.5 rounded-xl text-sm transition-all duration-200 flex items-center gap-3 group',
-                      filters.category === cat.id
-                        ? 'bg-teal-50 text-brand-teal font-bold'
-                        : 'text-slate-600 hover:bg-slate-50 font-medium'
-                    )}
-                  >
-                    <div className="w-8 h-8 rounded-lg overflow-hidden shrink-0 border border-slate-100 group-hover:scale-110 transition-transform">
-                      {cat.image ? (
-                        <img src={cat.image} alt="" className="w-full h-full object-cover" />
-                      ) : (
-                        <div className="w-full h-full bg-slate-100 flex items-center justify-center text-[10px] font-bold text-slate-400">
-                          {cat.label.charAt(0)}
-                        </div>
-                      )}
-                    </div>
-                    <span className="flex-1">{cat.label}</span>
-                    <span className={clsx(
-                      "text-[10px] px-2 py-0.5 rounded-md transition-colors",
-                      filters.category === cat.id ? "bg-brand-teal text-white" : "bg-slate-100 text-slate-400"
-                    )}>{cat.count}</span>
-                  </button>
-                ))}
-              </div>
+              )}
+              {filters.search && (
+                <button
+                  onClick={() => updateFilter('search', '')}
+                  className="px-3 py-1.5 bg-slate-100 text-slate-600 text-[11px] font-semibold rounded-lg flex items-center gap-2"
+                >
+                  &ldquo;{filters.search}&rdquo;
+                  <X size={12} />
+                </button>
+              )}
+              {filters.inStockOnly && (
+                <button
+                  onClick={() => updateFilter('inStockOnly', false)}
+                  className="px-3 py-1.5 bg-slate-100 text-slate-600 text-[11px] font-semibold uppercase tracking-wider rounded-lg flex items-center gap-2"
+                >
+                  In stock
+                  <X size={12} />
+                </button>
+              )}
+              {filters.maxPrice < MAX_PRICE && (
+                <button
+                  onClick={() => updateFilter('maxPrice', MAX_PRICE)}
+                  className="px-3 py-1.5 bg-slate-100 text-slate-600 text-[11px] font-semibold uppercase tracking-wider rounded-lg flex items-center gap-2"
+                >
+                  Under {(filters.maxPrice / 1_000_000).toFixed(1)}M
+                  <X size={12} />
+                </button>
+              )}
+              <button
+                onClick={clearFilters}
+                className="text-[11px] font-semibold uppercase tracking-wider text-slate-400 hover:text-red-500 transition-colors ml-1"
+              >
+                Reset all
+              </button>
             </div>
+          )}
 
-            {/* Price Range */}
-            <div>
-              <h3 className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-6 ml-1">Price Range</h3>
-              <div className="px-1">
-                <div className="flex justify-between text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-4">
-                  <span>UGX 0</span>
-                  <span className="text-brand-teal">MAX: {(filters.maxPrice / 1_000_000).toFixed(1)}M</span>
-                </div>
+          {/* Expandable filter panel */}
+          {showFilters && (
+            <div className="mt-4 pt-4 border-t border-slate-100 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+              <div>
+                <h2 className="label-caps text-xs text-slate-400 mb-3">Max Price</h2>
                 <input
                   type="range"
+                  aria-label="Maximum price"
                   min={0}
                   max={MAX_PRICE}
                   step={100_000}
                   value={filters.maxPrice}
                   onChange={(e) => updateFilter('maxPrice', Number(e.target.value))}
-                  className="w-full h-2 bg-slate-100 rounded-lg appearance-none cursor-pointer accent-brand-teal mb-6"
+                  className="w-full h-2 bg-slate-100 rounded-lg appearance-none cursor-pointer accent-brand-teal"
                 />
-                <div className="grid grid-cols-2 gap-3">
-                  <div className="relative">
-                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[10px] font-bold text-slate-300">MIN</span>
-                    <input
-                      type="number"
-                      value={filters.minPrice || ''}
-                      onChange={(e) => updateFilter('minPrice', Number(e.target.value))}
-                      className="input-field w-full pl-10 py-2 text-xs font-bold"
-                    />
-                  </div>
-                  <div className="relative">
-                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[10px] font-bold text-slate-300">MAX</span>
-                    <input
-                      type="number"
-                      value={filters.maxPrice === MAX_PRICE ? '' : filters.maxPrice}
-                      onChange={(e) =>
-                        updateFilter('maxPrice', e.target.value ? Number(e.target.value) : MAX_PRICE)
-                      }
-                      className="input-field w-full pl-10 py-2 text-xs font-bold"
-                    />
-                  </div>
+                <div className="flex justify-between text-[11px] font-semibold text-slate-400 mt-2">
+                  <span>UGX 0</span>
+                  <span className="text-brand-teal tabular-nums">
+                    {(filters.maxPrice / 1_000_000).toFixed(1)}M
+                  </span>
                 </div>
               </div>
-            </div>
 
-            {/* Availability */}
-            <div className="pt-4 border-t border-slate-100">
-              <label className="flex items-center justify-between cursor-pointer group">
-                <span className="text-sm font-bold text-slate-700">In Stock Only</span>
-                <div
-                  onClick={() => updateFilter('inStockOnly', !filters.inStockOnly)}
-                  className={clsx(
-                    'w-11 h-6 rounded-full transition-all duration-300 relative cursor-pointer p-1',
-                    filters.inStockOnly ? 'bg-brand-teal' : 'bg-slate-200'
-                  )}
-                >
-                  <div
-                    className={clsx(
-                      'w-4 h-4 bg-white rounded-full shadow-md transition-transform duration-300',
-                      filters.inStockOnly ? 'translate-x-5' : 'translate-x-0'
-                    )}
+              <div>
+                <h2 className="label-caps text-xs text-slate-400 mb-3">Price Range</h2>
+                <div className="grid grid-cols-2 gap-3">
+                  <input
+                    type="number"
+                    aria-label="Minimum price"
+                    placeholder="Min"
+                    value={filters.minPrice || ''}
+                    onChange={(e) => updateFilter('minPrice', Number(e.target.value))}
+                    className="input-field w-full py-2.5 text-sm"
+                  />
+                  <input
+                    type="number"
+                    aria-label="Maximum price"
+                    placeholder="Max"
+                    value={filters.maxPrice === MAX_PRICE ? '' : filters.maxPrice}
+                    onChange={(e) =>
+                      updateFilter('maxPrice', e.target.value ? Number(e.target.value) : MAX_PRICE)
+                    }
+                    className="input-field w-full py-2.5 text-sm"
                   />
                 </div>
-              </label>
+              </div>
+
+              <div className="flex flex-col gap-3">
+                <h2 className="label-caps text-xs text-slate-400">Availability</h2>
+                <button
+                  onClick={() => updateFilter('inStockOnly', !filters.inStockOnly)}
+                  aria-pressed={filters.inStockOnly}
+                  className="flex items-center gap-3 text-sm font-medium text-slate-700 w-fit"
+                >
+                  <span
+                    className={clsx(
+                      'w-5 h-5 rounded-md border flex items-center justify-center transition-colors',
+                      filters.inStockOnly
+                        ? 'bg-brand-teal border-brand-teal text-white'
+                        : 'border-slate-300 bg-white'
+                    )}
+                  >
+                    {filters.inStockOnly && <Check size={13} strokeWidth={3} />}
+                  </span>
+                  In stock only
+                </button>
+
+                {/* Sort lives here on mobile, where the toolbar select is hidden */}
+                <div className="relative sm:hidden">
+                  <select
+                    aria-label="Sort products"
+                    value={filters.sort}
+                    onChange={(e) => updateFilter('sort', e.target.value as SortOption)}
+                    className="input-field w-full appearance-none cursor-pointer py-2.5 pl-4 pr-10 text-sm"
+                  >
+                    {sortOptions.map((opt) => (
+                      <option key={opt.value} value={opt.value}>
+                        Sort: {opt.label}
+                      </option>
+                    ))}
+                  </select>
+                  <ChevronDown
+                    size={14}
+                    className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none"
+                  />
+                </div>
+              </div>
             </div>
+          )}
+        </div>
+      </div>
 
-            {/* Clear */}
-            {hasActiveFilters && (
-              <button
-                onClick={clearFilters}
-                className="w-full py-3 rounded-xl border-2 border-slate-100 text-xs font-bold text-slate-400 hover:text-red-500 hover:border-red-50 transition-all uppercase tracking-widest flex items-center justify-center gap-2"
-              >
-                <X size={14} /> Reset Filters
-              </button>
-            )}
-
-            {/* CTA in sidebar */}
-            {showFilters && (
-              <button 
-                onClick={() => setShowFilters(false)}
-                className="btn btn-primary w-full py-4 mt-8"
-              >
-                Show Results
-              </button>
-            )}
+      {/* ══ Categories (left) + promo slider (right) ══ */}
+      <div className="section-container pt-6 pb-8">
+        <div className="grid lg:grid-cols-[250px_1fr] xl:grid-cols-[280px_1fr] gap-5">
+          {/* Desktop rail */}
+          <aside className="hidden lg:block card bg-white p-3 self-start max-h-[440px] overflow-y-auto custom-scrollbar">
+            <h2 className="label-caps text-[11px] text-slate-400 px-3 pt-1 pb-2">Categories</h2>
+            {categoryRail}
           </aside>
 
-          {/* ── Product Grid ── */}
-          <div className="flex-1 min-w-0">
-            {/* Top Controls */}
-            <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mb-8">
-              <div className="flex items-center gap-2 overflow-x-auto pb-2 sm:pb-0 w-full sm:w-auto">
-                <button
-                  onClick={() => setShowFilters(true)}
-                  className="lg:hidden btn bg-white border border-slate-200 text-slate-700 px-4 py-2.5 text-sm gap-2"
-                >
-                  <SlidersHorizontal size={16} />
-                  Filters
-                </button>
-                {hasActiveFilters && (
-                  <div className="hidden sm:flex gap-2">
-                    {filters.category !== 'all' && (
-                      <span className="px-3 py-1.5 bg-teal-50 text-brand-teal text-[10px] font-bold uppercase tracking-wider rounded-lg border border-teal-100 flex items-center gap-2">
-                        {allCategories.find((c) => c.id === filters.category)?.label || categories.find((c) => c.id === filters.category)?.label}
-                        <X size={12} className="cursor-pointer" onClick={() => updateFilter('category', 'all')} />
-                      </span>
-                    )}
-                  </div>
+          {/* Mobile: horizontal category chips */}
+          <div className="lg:hidden -mx-5 px-5 overflow-x-auto">
+            <div className="flex gap-2 w-max pb-1">
+              <button
+                onClick={() => updateFilter('category', 'all')}
+                className={clsx(
+                  'px-4 py-2 rounded-full text-xs font-semibold whitespace-nowrap border transition-colors',
+                  filters.category === 'all'
+                    ? 'bg-brand-teal text-white border-brand-teal'
+                    : 'bg-white text-slate-600 border-slate-200'
                 )}
-              </div>
-
-              <div className="relative w-full sm:w-auto min-w-[200px]">
-                <select
-                  value={filters.sort}
-                  onChange={(e) => updateFilter('sort', e.target.value as SortOption)}
-                  className="w-full bg-white border border-slate-200 rounded-xl px-4 py-2.5 text-sm font-bold text-slate-700 appearance-none cursor-pointer focus:ring-2 focus:ring-brand-teal/20 focus:border-brand-teal outline-none transition-all"
+              >
+                All
+              </button>
+              {visibleCategories.map((cat) => (
+                <button
+                  key={cat.id}
+                  onClick={() => updateFilter('category', cat.id as ProductCategory)}
+                  className={clsx(
+                    'px-4 py-2 rounded-full text-xs font-semibold whitespace-nowrap border transition-colors',
+                    filters.category === cat.id
+                      ? 'bg-brand-teal text-white border-brand-teal'
+                      : 'bg-white text-slate-600 border-slate-200'
+                  )}
                 >
-                  {sortOptions.map((opt) => (
-                    <option key={opt.value} value={opt.value}>
-                      Sort by: {opt.label}
-                    </option>
-                  ))}
-                </select>
-                <ChevronDown size={14} className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
+                  {cat.label}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <ShopPromoSlider products={products} isLoading={loading} />
+        </div>
+      </div>
+
+      {/* ══ Product grid — full width, 4 across, infinite scroll ══ */}
+      <div className="section-container pb-20">
+        <div className="flex items-baseline justify-between gap-4 mb-5">
+          <h2 className="font-display font-bold text-xl md:text-2xl text-slate-900">
+            {filters.category === 'all' ? 'All Appliances' : activeCategoryLabel}
+          </h2>
+          {!loading && (
+            <p className="text-sm text-slate-500 tabular-nums">
+              {filtered.length} product{filtered.length !== 1 ? 's' : ''}
+            </p>
+          )}
+        </div>
+
+        {loading ? (
+          <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6">
+            {Array.from({ length: 8 }).map((_, i) => (
+              <div key={i} className="card overflow-hidden">
+                <div className="aspect-square bg-slate-100 animate-pulse" />
+                <div className="p-5 space-y-3">
+                  <div className="h-3 w-2/3 bg-slate-100 rounded animate-pulse" />
+                  <div className="h-3 w-1/2 bg-slate-100 rounded animate-pulse" />
+                  <div className="h-8 bg-slate-100 rounded animate-pulse" />
+                </div>
               </div>
+            ))}
+          </div>
+        ) : filtered.length === 0 ? (
+          <div className="card bg-white p-16 text-center">
+            <div className="w-20 h-20 rounded-full bg-slate-100 flex items-center justify-center mx-auto mb-8">
+              <Search size={32} className="text-slate-400" />
+            </div>
+            <h3 className="font-display font-bold text-2xl text-slate-900 mb-4">
+              No appliances found
+            </h3>
+            <p className="text-slate-500 mb-10 max-w-sm mx-auto leading-relaxed">
+              We couldn't find any products matching your current filters. Try adjusting your
+              search or category.
+            </p>
+            <button onClick={clearFilters} className="btn btn-primary px-10 py-4">
+              Reset All Filters
+            </button>
+          </div>
+        ) : (
+          <>
+            <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6">
+              {visible.map((product) => (
+                <ProductCard key={product.id} product={product} />
+              ))}
             </div>
 
-            {loading ? (
-              <div className="flex flex-col items-center justify-center py-24 text-slate-400">
-                <Loader2 size={48} className="animate-spin mb-4 text-brand-teal" />
-                <p className="font-medium">Loading products...</p>
-              </div>
-            ) : filtered.length === 0 ? (
-              <div className="card bg-white p-16 text-center">
-                <div className="w-20 h-20 rounded-full bg-slate-100 flex items-center justify-center mx-auto mb-8">
-                  <Search size={32} className="text-slate-400" />
-                </div>
-                <h3 className="font-display font-bold text-2xl text-slate-900 mb-4">
-                  No appliances found
-                </h3>
-                <p className="text-slate-500 font-medium mb-10 max-w-sm mx-auto leading-relaxed">
-                  We couldn't find any products matching your current filters. Try adjusting your search or category.
-                </p>
-                <button onClick={clearFilters} className="btn btn-primary px-10 py-4 shadow-xl shadow-brand-teal/20">
-                  Reset All Filters
+            {/* Infinite-scroll sentinel. The button below is the accessible
+                fallback and covers cases where the observer never fires. */}
+            <div ref={sentinelRef} className="h-px" aria-hidden="true" />
+
+            {hasMore ? (
+              <div className="flex flex-col items-center gap-3 pt-10">
+                <Loader2 size={24} className="animate-spin text-brand-teal" aria-hidden="true" />
+                <button
+                  onClick={loadMore}
+                  className="text-sm font-semibold text-slate-500 hover:text-brand-teal transition-colors"
+                >
+                  Load more products
                 </button>
               </div>
             ) : (
-              <>
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
-                  {paginated.map((product) => (
-                    <ProductCard key={product.id} product={product} />
-                  ))}
-                </div>
-
-                {totalPages > 1 && (
-                  <div className="flex items-center justify-center gap-1.5 mt-12">
-                    <button
-                      onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
-                      disabled={currentPage === 1}
-                      className="flex items-center gap-1.5 px-4 py-2.5 rounded-xl border border-slate-200 text-sm font-bold text-slate-600 hover:bg-slate-50 disabled:opacity-40 disabled:cursor-not-allowed transition-all"
-                    >
-                      <ChevronLeft size={16} /> Previous
-                    </button>
-
-                    <div className="flex items-center gap-1">
-                      {getPageNumbers().map((page, i) =>
-                        page === '...' ? (
-                          <span key={`ellipsis-${i}`} className="w-10 text-center text-slate-400 font-bold">···</span>
-                        ) : (
-                          <button
-                            key={page}
-                            onClick={() => setCurrentPage(page)}
-                            className={clsx(
-                              'w-10 h-10 rounded-xl text-sm font-bold transition-all',
-                              currentPage === page
-                                ? 'bg-white border-2 border-slate-800 text-slate-900'
-                                : 'text-slate-500 hover:bg-slate-100'
-                            )}
-                          >
-                            {page}
-                          </button>
-                        )
-                      )}
-                    </div>
-
-                    <button
-                      onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
-                      disabled={currentPage === totalPages}
-                      className="flex items-center gap-1.5 px-4 py-2.5 rounded-xl border border-slate-200 text-sm font-bold text-slate-600 hover:bg-slate-50 disabled:opacity-40 disabled:cursor-not-allowed transition-all"
-                    >
-                      Next <ChevronRight size={16} />
-                    </button>
-                  </div>
-                )}
-              </>
+              <p className="text-center text-sm text-slate-400 pt-10">
+                You&rsquo;ve seen all {filtered.length} product
+                {filtered.length !== 1 ? 's' : ''}.
+              </p>
             )}
-          </div>
-        </div>
+
+            <p className="sr-only" aria-live="polite">
+              Showing {visible.length} of {filtered.length} products
+            </p>
+          </>
+        )}
       </div>
     </div>
   )

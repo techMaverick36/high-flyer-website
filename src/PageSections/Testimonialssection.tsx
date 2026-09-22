@@ -43,7 +43,7 @@ export default function TestimonialsSection() {
                 {t.name.charAt(0)}
               </div>
               <div>
-                <p className="font-display font-bold text-slate-900 text-sm leading-none mb-0.5">{t.name}</p>
+                <p className="font-body font-semibold text-slate-900 text-sm leading-none mb-0.5">{t.name}</p>
                 <p className="text-[11px] text-slate-400 uppercase tracking-wide">{t.location}</p>
               </div>
             </div>
