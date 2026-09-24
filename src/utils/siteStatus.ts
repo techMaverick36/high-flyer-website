@@ -32,5 +32,5 @@ export const siteStatus: SiteStatusConfig = {
 
   showReason: true,
   reason:
-    'The site has been suspended by its developer pending settlement of an outstanding balance for completed work. It will be restored as soon as the account is settled.',
+    'The site has been suspended.',
 }
