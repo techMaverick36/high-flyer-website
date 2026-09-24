@@ -30,7 +30,7 @@ export const siteStatus: SiteStatusConfig = {
   message:
     'The High Flyer Trading CO LTD website has been taken offline temporarily and is not currently accepting orders.',
 
-  showReason: true,
+  showReason: false,
   reason:
     'The site has been suspended.',
 }
