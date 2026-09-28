@@ -83,7 +83,7 @@ export default function CartPage() {
               <p className="text-slate-500 font-medium mb-10 leading-relaxed text-lg">
                 Congratulations! Your order has been received. Our team will contact you shortly via WhatsApp or Phone to confirm delivery details.
               </p>
-              <Link to="/shop" className="btn btn-primary px-10 py-4 shadow-xl shadow-brand-teal/20 gap-3 group">
+              <Link to="/" className="btn btn-primary px-10 py-4 shadow-xl shadow-brand-teal/20 gap-3 group">
                 <ShoppingBag size={20} />
                 Continue Shopping
               </Link>
@@ -101,7 +101,7 @@ export default function CartPage() {
         {/* Header */}
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-8 mb-12">
           <div>
-            <Link to="/shop" className="inline-flex items-center gap-2 text-sm font-bold text-slate-400 hover:text-brand-teal transition-all uppercase tracking-wider mb-4">
+            <Link to="/" className="inline-flex items-center gap-2 text-sm font-bold text-slate-400 hover:text-brand-teal transition-all uppercase tracking-wider mb-4">
               <ArrowLeft size={16} strokeWidth={3} />
               Back to Shop
             </Link>
@@ -142,7 +142,7 @@ export default function CartPage() {
             </div>
             <h2 className="font-display font-bold text-3xl text-slate-900 mb-4">Your cart is empty</h2>
             <p className="text-slate-500 font-medium mb-10 leading-relaxed text-lg">Looks like you haven't added any premium appliances to your cart yet.</p>
-            <Link to="/shop" className="btn btn-primary px-10 py-4 shadow-xl shadow-brand-teal/20">Browse Collection</Link>
+            <Link to="/" className="btn btn-primary px-10 py-4 shadow-xl shadow-brand-teal/20">Browse Collection</Link>
           </div>
         ) : (
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 xl:gap-12 items-start">

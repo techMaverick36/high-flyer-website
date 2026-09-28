@@ -23,6 +23,7 @@ import { formatPrice, getDiscountPercent } from "../utils";
 import StarRating from "../components/StarRating";
 import ProductCard from "../components/ProductCard";
 import SEO from "../components/SEO";
+import ProductSchema from "../components/ProductSchema";
 import clsx from "clsx";
 
 export default function ProductDetailPage() {
@@ -88,6 +89,7 @@ export default function ProductDetailPage() {
 				image={product.images[0]?.url}
 				type="product"
 			/>
+			<ProductSchema product={product} />
 			{/* Breadcrumb */}
 			<div className="bg-white border-b border-slate-100">
 				<div className="section-container py-4 flex items-center gap-3 text-sm font-medium">
@@ -366,7 +368,7 @@ export default function ProductDetailPage() {
 								</h2>
 							</div>
 							<Link
-								to="/shop"
+								to="/"
 								className="btn px-8 py-3 bg-white border-2 border-slate-100 text-slate-600 font-bold hover:border-brand-teal hover:text-brand-teal"
 							>
 								View All Collection

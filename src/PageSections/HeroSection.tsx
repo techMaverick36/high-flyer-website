@@ -91,7 +91,7 @@ export default function HeroSection() {
 
           <div className="flex flex-col sm:flex-row gap-3">
             <Link
-              to="/shop"
+              to="/"
               className="btn btn-primary px-8 py-4 text-base group"
             >
               Shop Now

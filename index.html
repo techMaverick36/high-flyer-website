@@ -8,16 +8,33 @@
 		<link rel="icon" type="image/png" href="/logo.png" />
 		<link rel="apple-touch-icon" href="/logo.png" />
 
-		<!-- Default title & description (overridden per-page by react-helmet-async) -->
+		<!--
+			No-JS fallback tags.
+
+			Social crawlers (WhatsApp, Facebook, Twitter) never execute
+			JavaScript, so these are the ONLY tags they see. Keep them.
+
+			Once the app renders, react-helmet-async adds its own per-page
+			copies alongside these — it manages only tags it created, so it
+			cannot replace static ones (data-rh does not work for this).
+			Helmet's copy is inserted first, which is the one browsers and
+			Google use, so the per-page values win.
+
+			The duplication disappears for bots the moment prerendering is
+			enabled, because each route is then served HTML that already
+			contains its own correct tags. Until then, removing these would
+			leave shared links with no preview at all, which is worse.
+
+			Deliberately NOT duplicated here: `robots` (absent means
+			index,follow, and SEO.tsx emits noindex only where needed).
+		-->
 		<title>High Flyer Trading CO LTD | Premium Home Appliances in Uganda</title>
 		<meta name="description" content="Uganda's most trusted home appliance showroom. Genuine refrigerators, TVs, washing machines, cookers and more. Visit us at Aponye Shopping Centre, Kampala." />
 		<meta name="theme-color" content="#0891b2" />
-		<meta name="robots" content="index, follow" />
 
-		<!-- Canonical (overridden per-page) -->
 		<link rel="canonical" href="https://highflyertadingltd.com/" />
 
-		<!-- Open Graph defaults (overridden per-page) -->
+		<!-- Open Graph defaults -->
 		<meta property="og:type" content="website" />
 		<meta property="og:site_name" content="High Flyer Trading CO LTD" />
 		<meta property="og:title" content="High Flyer Trading CO LTD | Premium Home Appliances in Uganda" />

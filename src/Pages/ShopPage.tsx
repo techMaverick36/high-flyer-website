@@ -312,7 +312,7 @@ export default function ShopPage() {
           {showFilters && (
             <div className="mt-4 pt-4 border-t border-slate-100 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
               <div>
-                <h2 className="label-caps text-xs text-slate-400 mb-3">Max Price</h2>
+                <p className="label-caps text-xs text-slate-400 mb-3">Max Price</p>
                 <input
                   type="range"
                   aria-label="Maximum price"
@@ -332,7 +332,7 @@ export default function ShopPage() {
               </div>
 
               <div>
-                <h2 className="label-caps text-xs text-slate-400 mb-3">Price Range</h2>
+                <p className="label-caps text-xs text-slate-400 mb-3">Price Range</p>
                 <div className="grid grid-cols-2 gap-3">
                   <input
                     type="number"
@@ -356,7 +356,7 @@ export default function ShopPage() {
               </div>
 
               <div className="flex flex-col gap-3">
-                <h2 className="label-caps text-xs text-slate-400">Availability</h2>
+                <p className="label-caps text-xs text-slate-400">Availability</p>
                 <button
                   onClick={() => updateFilter('inStockOnly', !filters.inStockOnly)}
                   aria-pressed={filters.inStockOnly}
@@ -447,9 +447,9 @@ export default function ShopPage() {
       {/* ══ Product grid — full width, 4 across, infinite scroll ══ */}
       <div className="section-container pb-20">
         <div className="flex items-baseline justify-between gap-4 mb-5">
-          <h2 className="font-display font-bold text-xl md:text-2xl text-slate-900">
+          <h1 className="font-display font-bold text-xl md:text-2xl text-slate-900">
             {filters.category === 'all' ? 'All Appliances' : activeCategoryLabel}
-          </h2>
+          </h1>
           {!loading && (
             <p className="text-sm text-slate-500 tabular-nums">
               {filtered.length} product{filtered.length !== 1 ? 's' : ''}

@@ -37,6 +37,10 @@ export default function ProductCard({ product, className }: ProductCardProps) {
           <img
             src={product.images[0]?.url}
             alt={product.images[0]?.alt || product.name}
+            // 24 cards render per batch; without these the browser fetches
+            // every image up front and LCP suffers badly on the grid.
+            loading="lazy"
+            decoding="async"
             className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
             onError={() => setImgError(true)}
           />

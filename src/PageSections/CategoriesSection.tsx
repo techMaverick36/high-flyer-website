@@ -12,7 +12,7 @@ export default function CategoriesSection() {
         title="Everything For Your Home"
         subtitle="From kitchen to living room find the perfect appliance for every corner of your home."
         action={
-          <Link to="/shop" className="btn btn-outline btn-sm">
+          <Link to="/" className="btn btn-outline btn-sm">
             All Products <ArrowRight size={14} />
           </Link>
         }

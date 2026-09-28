@@ -14,7 +14,7 @@ export default function FeaturedProductsSection() {
         title="Top Picks This Season"
         subtitle="Hand-selected appliances that customers love quality, value, and reliability guaranteed."
         action={
-          <Link to="/shop" className="btn btn-outline btn-sm">
+          <Link to="/" className="btn btn-outline btn-sm">
             View All <ArrowRight size={14} />
           </Link>
         }

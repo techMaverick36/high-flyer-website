@@ -1,9 +1,13 @@
 import { Link } from 'react-router-dom'
 import { Home } from 'lucide-react'
+import SEO from '../components/SEO'
 
 export default function NotFoundPage() {
   return (
-    <div className="pt-[112px] min-h-screen bg-background flex items-center justify-center">
+    <div className="pt-24 md:pt-28 min-h-screen bg-background flex items-center justify-center">
+      {/* Netlify serves every unmatched path as HTTP 200, so without this the
+          404 page is indexable and Google reports it as a soft 404. */}
+      <SEO title="Page Not Found" noIndex />
       <div className="section-container">
         <div className="card max-w-2xl mx-auto p-12 md:p-20 text-center relative overflow-hidden">
           <div className="absolute top-0 left-1/2 -translate-x-1/2 w-64 h-64 bg-teal-500/5 blur-[80px] rounded-full" />
@@ -16,11 +20,11 @@ export default function NotFoundPage() {
               The page you're looking for doesn't exist. But don't worry, we have a great range of appliances waiting for you!
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Link to="/" className="btn btn-primary px-10 py-4 shadow-xl shadow-brand-teal/20 gap-3 group">
+              <Link to="/home" className="btn btn-primary px-10 py-4 shadow-xl shadow-brand-teal/20 gap-3 group">
                 <Home size={20} />
                 Back to Home
               </Link>
-              <Link to="/shop" className="btn bg-white border-2 border-slate-100 text-slate-600 px-10 py-4 font-bold hover:border-brand-teal hover:text-brand-teal transition-all">
+              <Link to="/" className="btn bg-white border-2 border-slate-100 text-slate-600 px-10 py-4 font-bold hover:border-brand-teal hover:text-brand-teal transition-all">
                 Browse Shop
               </Link>
             </div>

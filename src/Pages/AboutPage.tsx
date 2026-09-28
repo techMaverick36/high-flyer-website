@@ -191,7 +191,7 @@ export default function AboutPage() {
                 Browse our full range of genuine home appliances and place your order directly via WhatsApp.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <Link to="/shop" className="btn bg-white text-brand-orange px-10 py-5 text-lg font-semibold uppercase tracking-wider hover:bg-orange-50 transition-all shadow-xl shadow-black/10">
+                <Link to="/" className="btn bg-white text-brand-orange px-10 py-5 text-lg font-semibold uppercase tracking-wider hover:bg-orange-50 transition-all shadow-xl shadow-black/10">
                   Shop Now
                 </Link>
                 <Link to="/contact" className="btn bg-orange-600/30 text-white border-2 border-white/20 px-10 py-5 text-lg font-semibold uppercase tracking-wider backdrop-blur-md hover:bg-white/10 transition-all">

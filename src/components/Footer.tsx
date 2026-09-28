@@ -69,7 +69,7 @@ export default function Footer() {
 						<ul className="space-y-4">
 							{[
 								{ label: "Home", path: "/" },
-								{ label: "Shop All Products", path: "/shop" },
+								{ label: "Shop All Products", path: "/" },
 								{ label: "About Us", path: "/about" },
 								{ label: "Contact Us", path: "/contact" },
 								{ label: "Cart", path: "/cart" },

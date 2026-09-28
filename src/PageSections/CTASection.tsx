@@ -16,7 +16,7 @@ export default function CTASection() {
               Browse our full range, add to cart, and place your order via WhatsApp. No online payment required.
             </p>
             <div className="flex flex-col sm:flex-row gap-3 justify-center">
-              <Link to="/shop" className="btn btn-primary px-8 py-4 text-base group">
+              <Link to="/" className="btn btn-primary px-8 py-4 text-base group">
                 Shop Collection
                 <ArrowRight size={18} className="ml-2 transition-transform duration-200 group-hover:translate-x-1" />
               </Link>
