@@ -9,28 +9,27 @@
  * To restore the site: set `suspended` to false and redeploy.
  */
 export interface SiteStatusConfig {
-  /** Master switch. false = site behaves normally. */
-  suspended: boolean
-  headline: string
-  /** Neutral, customer-facing explanation. */
-  message: string
-  /**
-   * Whether to publicly state the billing reason. Set false to show only
-   * `message` and keep the dispute off the public page.
-   */
-  showReason: boolean
-  reason: string
+	/** Master switch. false = site behaves normally. */
+	suspended: boolean;
+	headline: string;
+	/** Neutral, customer-facing explanation. */
+	message: string;
+	/**
+	 * Whether to publicly state the billing reason. Set false to show only
+	 * `message` and keep the dispute off the public page.
+	 */
+	showReason: boolean;
+	reason: string;
 }
 
 export const siteStatus: SiteStatusConfig = {
-  suspended: true,
+	suspended: false,
 
-  headline: 'This site is temporarily unavailable',
+	headline: "This site is temporarily unavailable",
 
-  message:
-    'The High Flyer Trading CO LTD website has been taken offline temporarily and is not currently accepting orders.',
+	message:
+		"The High Flyer Trading CO LTD website has been taken offline temporarily and is not currently accepting orders.",
 
-  showReason: false,
-  reason:
-    'The site has been suspended.',
-}
+	showReason: false,
+	reason: "The site has been suspended.",
+};
