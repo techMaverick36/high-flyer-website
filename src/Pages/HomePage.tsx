@@ -11,7 +11,8 @@ export default function HomePage() {
   return (
     <>
       <SEO
-        path="/"
+        title="Welcome"
+        path="/home"
         description="Uganda's most trusted home appliance showroom. Shop genuine refrigerators, TVs, washing machines, cookers and more at Aponye Shopping Centre, Kampala."
       />
       <HeroSection />

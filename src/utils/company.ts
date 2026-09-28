@@ -40,7 +40,7 @@ export const companyInfo = {
 	tagline: "Uganda's Home Appliance Destination",
 	phone: "+256 742244256",
 	whatsapp: "+256 742244256",
-	email: "info@highflyertrading.co.ug",
+	email: "info@highflyertadingltd.com",
 	locations: [
 		{
 			id: "office",

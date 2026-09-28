@@ -2,4 +2,4 @@ User-agent: *
 Allow: /
 Disallow: /cart
 
-Sitemap: https://highflyertrading.co.ug/sitemap.xml
+Sitemap: https://highflyertadingltd.com/sitemap.xml

@@ -1,6 +1,9 @@
 import { Helmet } from 'react-helmet-async'
+import { SITE_ORIGIN } from '../utils/site'
 
-export const SITE_BASE_URL = 'https://highflyertrading.co.ug'
+/** Re-exported for existing callers; the value lives in utils/site.ts so the
+ *  sitemap generator and these canonical tags share one origin. */
+export const SITE_BASE_URL = SITE_ORIGIN
 const SITE_NAME = 'High Flyer Trading CO LTD'
 const DEFAULT_DESC =
   "Uganda's most trusted home appliance showroom. Genuine products, expert advice, and reliable after-sales service. Visit us at Aponye Shopping Centre, Kampala."
