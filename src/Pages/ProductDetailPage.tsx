@@ -24,6 +24,7 @@ import StarRating from "../components/StarRating";
 import ProductCard from "../components/ProductCard";
 import SEO from "../components/SEO";
 import ProductSchema from "../components/ProductSchema";
+import { categoryPath } from "../utils/site";
 import clsx from "clsx";
 
 export default function ProductDetailPage() {
@@ -107,6 +108,17 @@ export default function ProductDetailPage() {
 						Shop
 					</Link>
 					<ChevronRight size={14} className="text-slate-300" />
+					{product.category?.slug && (
+						<>
+							<Link
+								to={categoryPath(product.category.slug)}
+								className="text-slate-400 hover:text-brand-teal transition-colors whitespace-nowrap"
+							>
+								{product.category.title}
+							</Link>
+							<ChevronRight size={14} className="text-slate-300" />
+						</>
+					)}
 					<span className="text-slate-900 truncate max-w-50">
 						{product.name}
 					</span>
@@ -183,9 +195,18 @@ export default function ProductDetailPage() {
 								size={18}
 							/>
 							<div className="h-4 w-px bg-slate-200" />
-							<span className="text-sm font-bold text-brand-teal uppercase tracking-wider">
-								{product.category.title}
-							</span>
+							{product.category?.slug ? (
+								<Link
+									to={categoryPath(product.category.slug)}
+									className="text-sm font-bold text-brand-teal uppercase tracking-wider hover:underline"
+								>
+									{product.category.title}
+								</Link>
+							) : (
+								<span className="text-sm font-bold text-brand-teal uppercase tracking-wider">
+									{product.category?.title}
+								</span>
+							)}
 						</div>
 
 						{/* Price */}
@@ -368,10 +389,16 @@ export default function ProductDetailPage() {
 								</h2>
 							</div>
 							<Link
-								to="/"
+								to={
+									product.category?.slug
+										? categoryPath(product.category.slug)
+										: "/"
+								}
 								className="btn px-8 py-3 bg-white border-2 border-slate-100 text-slate-600 font-bold hover:border-brand-teal hover:text-brand-teal"
 							>
-								View All Collection
+								{product.category?.title
+									? `View All ${product.category.title}`
+									: "View All Collection"}
 							</Link>
 						</div>
 						<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">

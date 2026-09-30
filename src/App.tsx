@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom'
+import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom'
 import { HelmetProvider } from 'react-helmet-async'
 import { useEffect } from 'react'
 import Header from './components/Header'
@@ -23,6 +23,13 @@ function ScrollToTop() {
   return null
 }
 
+// /shop was never a real route but was linked site-wide. Keep the query so
+// ShopPage can forward an old ?category= link to its category page.
+function ShopRedirect() {
+  const { search } = useLocation()
+  return <Navigate to={{ pathname: '/', search }} replace />
+}
+
 function Layout() {
   return (
     <>
@@ -32,6 +39,8 @@ function Layout() {
       <main>
         <Routes>
           <Route path="/" element={<ShopPage />} />
+          <Route path="/category/:slug" element={<ShopPage />} />
+          <Route path="/shop" element={<ShopRedirect />} />
           <Route path="/home" element={<HomePage />} />
           <Route path="/product/:slug" element={<ProductDetailPage />} />
           <Route path="/cart" element={<CartPage />} />

@@ -1,5 +1,5 @@
 import { useState, useMemo, useEffect, useRef, useCallback } from 'react'
-import { useSearchParams } from 'react-router-dom'
+import { Link, Navigate, useNavigate, useParams, useSearchParams } from 'react-router-dom'
 import {
   Search,
   SlidersHorizontal,
@@ -7,13 +7,16 @@ import {
   ChevronDown,
   Loader2,
   Check,
+  ChevronRight,
 } from 'lucide-react'
-import { categories } from '../utils/products'
 import { useGetAllProductsQuery, useGetAllCategoriesQuery } from '../store/api/sanityApi'
-import type { FilterState, ProductCategory, SortOption } from '../utils/types'
+import type { FilterState, SortOption } from '../utils/types'
 import ProductCard from '../components/ProductCard'
 import ShopPromoSlider from '../components/ShopPromoSlider'
 import SEO from '../components/SEO'
+import CategorySchema from '../components/CategorySchema'
+import NotFoundPage from './NotFound'
+import { categoryPath } from '../utils/site'
 import clsx from 'clsx'
 
 const sortOptions: { value: SortOption; label: string }[] = [
@@ -28,32 +31,59 @@ const MAX_PRICE = 7_000_000
 /** 4 columns x 6 rows — one "page" of the infinite scroll. */
 const BATCH_SIZE = 24
 
+/** The category comes from the URL (/category/:slug), not from filter state,
+ *  so each category is a real, crawlable page. */
+type ShopFilters = Omit<FilterState, 'category'>
+
+const DEFAULT_FILTERS: ShopFilters = {
+  minPrice: 0,
+  maxPrice: MAX_PRICE,
+  inStockOnly: false,
+  sort: 'newest',
+  search: '',
+}
+
 export default function ShopPage() {
-  const [searchParams, setSearchParams] = useSearchParams()
+  const { slug } = useParams<{ slug: string }>()
+  const [searchParams] = useSearchParams()
+  const navigate = useNavigate()
   const [showFilters, setShowFilters] = useState(false)
   const [visibleCount, setVisibleCount] = useState(BATCH_SIZE)
 
   const { data: products = [], isLoading: productsLoading } = useGetAllProductsQuery()
-  const { data: allCategories = [], isLoading: categoriesLoading } = useGetAllCategoriesQuery()
+  const {
+    data: allCategories = [],
+    isLoading: categoriesLoading,
+    isError: categoriesError,
+  } = useGetAllCategoriesQuery()
   const loading = productsLoading || categoriesLoading
 
-  const [filters, setFilters] = useState<FilterState>({
-    category: (searchParams.get('category') as ProductCategory) || 'all',
-    minPrice: 0,
-    maxPrice: MAX_PRICE,
-    inStockOnly: false,
-    sort: 'newest',
-    search: '',
-  })
+  const activeCategory = slug ?? 'all'
+  const category = slug ? allCategories.find((c) => c.id === slug) : undefined
+
+  const [filters, setFilters] = useState<ShopFilters>(DEFAULT_FILTERS)
 
   // Any filter change restarts the infinite scroll from the first batch.
-  const updateFilter = <K extends keyof FilterState>(key: K, value: FilterState[K]) => {
+  const updateFilter = <K extends keyof ShopFilters>(key: K, value: ShopFilters[K]) => {
     setFilters((prev) => ({ ...prev, [key]: value }))
     setVisibleCount(BATCH_SIZE)
   }
 
+  // Moving between categories reuses this component, so restart the
+  // infinite scroll there too (adjusting state during render, not in an effect).
+  const [prevSlug, setPrevSlug] = useState(slug)
+  if (slug !== prevSlug) {
+    setPrevSlug(slug)
+    setVisibleCount(BATCH_SIZE)
+  }
+
+  const categoryProducts = useMemo(
+    () => (slug ? products.filter((p) => p.category?.slug === slug) : products),
+    [products, slug]
+  )
+
   const filtered = useMemo(() => {
-    let result = [...products]
+    let result = [...categoryProducts]
 
     if (filters.search) {
       const q = filters.search.toLowerCase()
@@ -63,10 +93,6 @@ export default function ShopPage() {
           (p.shortDescription?.toLowerCase() ?? '').includes(q) ||
           (p.tags ?? []).some((t) => t?.toLowerCase().includes(q))
       )
-    }
-
-    if (filters.category !== 'all') {
-      result = result.filter((p) => p.category.slug === filters.category)
     }
 
     result = result.filter(
@@ -93,19 +119,12 @@ export default function ShopPage() {
     }
 
     return result
-  }, [filters, products])
+  }, [filters, categoryProducts])
 
   const clearFilters = () => {
-    setFilters({
-      category: 'all',
-      minPrice: 0,
-      maxPrice: MAX_PRICE,
-      inStockOnly: false,
-      sort: 'newest',
-      search: '',
-    })
-    setSearchParams({})
+    setFilters(DEFAULT_FILTERS)
     setVisibleCount(BATCH_SIZE)
+    if (slug) navigate('/')
   }
 
   // ── Infinite scroll ──────────────────────────────────────
@@ -134,8 +153,21 @@ export default function ShopPage() {
     return () => observer.disconnect()
   }, [hasMore, loading, loadMore])
 
+  // Old ?category= links (bookmarks, links Google already knows) move to the
+  // category's own URL.
+  const legacyCategory = searchParams.get('category')
+  if (!slug && legacyCategory) {
+    return <Navigate to={categoryPath(legacyCategory)} replace />
+  }
+
+  // An unknown slug is a real 404, not an empty listing Google would flag as
+  // a soft 404. Skipped on a fetch error so an outage doesn't 404 the catalogue.
+  if (slug && !categoriesLoading && !categoriesError && !category) {
+    return <NotFoundPage />
+  }
+
   const hasActiveFilters =
-    filters.category !== 'all' ||
+    activeCategory !== 'all' ||
     filters.minPrice > 0 ||
     filters.maxPrice < MAX_PRICE ||
     filters.inStockOnly ||
@@ -144,32 +176,36 @@ export default function ShopPage() {
   // Categories with nothing in them are dead ends — keep them out of the rail.
   const visibleCategories = allCategories.filter((c) => (c.count ?? 0) > 0)
 
+  // While categories load, fall back to a label built from the slug so the
+  // title and canonical never briefly point at the shop root.
   const activeCategoryLabel =
-    allCategories.find((c) => c.id === filters.category)?.label ??
-    categories.find((c) => c.id === filters.category)?.label
+    category?.label ??
+    (slug ? slug.replace(/-/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase()) : undefined)
 
   const categoryRail = (
     <div className="space-y-1">
-      <button
-        onClick={() => updateFilter('category', 'all')}
+      <Link
+        to="/"
+        aria-current={activeCategory === 'all' ? 'page' : undefined}
         className={clsx(
           'w-full text-left px-3 py-2.5 rounded-lg text-sm transition-colors flex items-center justify-between',
-          filters.category === 'all'
+          activeCategory === 'all'
             ? 'bg-teal-50 text-brand-teal font-semibold'
             : 'text-slate-600 hover:bg-slate-50 font-medium'
         )}
       >
         <span>All Appliances</span>
         <span className="text-[10px] tabular-nums text-slate-400">{products.length}</span>
-      </button>
+      </Link>
 
       {visibleCategories.map((cat) => (
-        <button
+        <Link
           key={cat.id}
-          onClick={() => updateFilter('category', cat.id as ProductCategory)}
+          to={categoryPath(cat.id)}
+          aria-current={activeCategory === cat.id ? 'page' : undefined}
           className={clsx(
             'w-full text-left px-3 py-2 rounded-lg text-sm transition-colors flex items-center gap-3',
-            filters.category === cat.id
+            activeCategory === cat.id
               ? 'bg-teal-50 text-brand-teal font-semibold'
               : 'text-slate-600 hover:bg-slate-50 font-medium'
           )}
@@ -187,25 +223,47 @@ export default function ShopPage() {
           <span
             className={clsx(
               'text-[10px] tabular-nums px-1.5 py-0.5 rounded',
-              filters.category === cat.id
+              activeCategory === cat.id
                 ? 'bg-brand-teal text-white'
                 : 'bg-slate-100 text-slate-400'
             )}
           >
             {cat.count}
           </span>
-        </button>
+        </Link>
       ))}
     </div>
   )
 
+  const categoryDescription = category?.description?.trim()
+
   return (
     <div className="pt-24 md:pt-28 min-h-screen bg-background">
-      <SEO
-        title="Shop All Appliances"
-        path="/"
-        description="Browse our full range of genuine home appliances in Kampala — refrigerators, TVs, washing machines, cookers, air fryers and more. All products carry manufacturer warranty."
-      />
+      {slug ? (
+        <>
+          <SEO
+            title={`${activeCategoryLabel} in Kampala, Uganda`}
+            path={categoryPath(slug)}
+            description={
+              categoryDescription ||
+              `Shop genuine ${activeCategoryLabel?.toLowerCase()} at High Flyer Trading CO LTD in Kampala. Manufacturer warranty and expert advice — visit our showroom or order via WhatsApp.`
+            }
+            image={category?.image || undefined}
+            // An empty category is thin content; keep it out of the index
+            // until products are added (the sitemap skips it too).
+            noIndex={category?.count === 0}
+          />
+          {category && !productsLoading && (
+            <CategorySchema slug={slug} label={category.label} products={categoryProducts} />
+          )}
+        </>
+      ) : (
+        <SEO
+          title="Shop All Appliances"
+          path="/"
+          description="Browse our full range of genuine home appliances in Kampala — refrigerators, TVs, washing machines, cookers, air fryers and more. All products carry manufacturer warranty."
+        />
+      )}
 
       {/* ══ Search + filter toolbar (sticky, marketplace style) ══ */}
       <div className="sticky top-24 md:top-28 z-40 bg-white border-b border-slate-100 shadow-sm">
@@ -263,14 +321,15 @@ export default function ShopPage() {
           {/* Active filter chips */}
           {hasActiveFilters && (
             <div className="flex items-center gap-2 flex-wrap mt-3">
-              {filters.category !== 'all' && activeCategoryLabel && (
-                <button
-                  onClick={() => updateFilter('category', 'all')}
+              {activeCategory !== 'all' && activeCategoryLabel && (
+                <Link
+                  to="/"
+                  aria-label={`Remove ${activeCategoryLabel} filter`}
                   className="px-3 py-1.5 bg-teal-50 text-brand-teal text-[11px] font-semibold uppercase tracking-wider rounded-lg border border-teal-100 flex items-center gap-2"
                 >
                   {activeCategoryLabel}
                   <X size={12} />
-                </button>
+                </Link>
               )}
               {filters.search && (
                 <button
@@ -412,30 +471,32 @@ export default function ShopPage() {
           {/* Mobile: horizontal category chips */}
           <div className="lg:hidden -mx-5 px-5 overflow-x-auto">
             <div className="flex gap-2 w-max pb-1">
-              <button
-                onClick={() => updateFilter('category', 'all')}
+              <Link
+                to="/"
+                aria-current={activeCategory === 'all' ? 'page' : undefined}
                 className={clsx(
                   'px-4 py-2 rounded-full text-xs font-semibold whitespace-nowrap border transition-colors',
-                  filters.category === 'all'
+                  activeCategory === 'all'
                     ? 'bg-brand-teal text-white border-brand-teal'
                     : 'bg-white text-slate-600 border-slate-200'
                 )}
               >
                 All
-              </button>
+              </Link>
               {visibleCategories.map((cat) => (
-                <button
+                <Link
                   key={cat.id}
-                  onClick={() => updateFilter('category', cat.id as ProductCategory)}
+                  to={categoryPath(cat.id)}
+                  aria-current={activeCategory === cat.id ? 'page' : undefined}
                   className={clsx(
                     'px-4 py-2 rounded-full text-xs font-semibold whitespace-nowrap border transition-colors',
-                    filters.category === cat.id
+                    activeCategory === cat.id
                       ? 'bg-brand-teal text-white border-brand-teal'
                       : 'bg-white text-slate-600 border-slate-200'
                   )}
                 >
                   {cat.label}
-                </button>
+                </Link>
               ))}
             </div>
           </div>
@@ -446,9 +507,26 @@ export default function ShopPage() {
 
       {/* ══ Product grid — full width, 4 across, infinite scroll ══ */}
       <div className="section-container pb-20">
+        {slug && (
+          <nav aria-label="Breadcrumb" className="mb-2">
+            <ol className="flex items-center gap-2 text-sm font-medium">
+              <li>
+                <Link to="/" className="text-slate-400 hover:text-brand-teal transition-colors">
+                  Shop
+                </Link>
+              </li>
+              <li aria-hidden="true">
+                <ChevronRight size={14} className="text-slate-300" />
+              </li>
+              <li aria-current="page" className="text-slate-700">
+                {activeCategoryLabel}
+              </li>
+            </ol>
+          </nav>
+        )}
         <div className="flex items-baseline justify-between gap-4 mb-5">
           <h1 className="font-display font-bold text-xl md:text-2xl text-slate-900">
-            {filters.category === 'all' ? 'All Appliances' : activeCategoryLabel}
+            {activeCategory === 'all' ? 'All Appliances' : activeCategoryLabel}
           </h1>
           {!loading && (
             <p className="text-sm text-slate-500 tabular-nums">
@@ -456,6 +534,11 @@ export default function ShopPage() {
             </p>
           )}
         </div>
+        {categoryDescription && (
+          <p className="text-slate-600 leading-relaxed max-w-3xl -mt-2 mb-6">
+            {categoryDescription}
+          </p>
+        )}
 
         {loading ? (
           <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6">

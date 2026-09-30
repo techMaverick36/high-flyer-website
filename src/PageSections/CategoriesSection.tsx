@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom'
 import { ArrowRight, Loader2 } from 'lucide-react'
 import { useGetAllCategoriesQuery } from '../store/api/sanityApi'
 import Section, { SectionHeader } from '../components/Section'
+import { categoryPath } from '../utils/site'
 
 export default function CategoriesSection() {
   const { data: categories = [], isLoading: loading } = useGetAllCategoriesQuery()
@@ -25,10 +26,11 @@ export default function CategoriesSection() {
             <p className="font-medium">Loading categories...</p>
           </div>
         ) : (
-          categories.map((cat) => (
+          // Empty categories are noindexed dead ends; don't link them.
+          categories.filter((cat) => (cat.count ?? 0) > 0).map((cat) => (
             <Link
               key={cat.id}
-              to={`/shop?category=${cat.id}`}
+              to={categoryPath(cat.id)}
               className="group card card-hover text-center flex flex-col items-center overflow-hidden"
             >
               <div className="w-full aspect-[4/3] relative overflow-hidden bg-slate-100">

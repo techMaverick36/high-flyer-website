@@ -1,6 +1,6 @@
 import { Helmet } from 'react-helmet-async'
 import type { Product } from '../utils/types'
-import { SITE_ORIGIN } from '../utils/site'
+import { SITE_ORIGIN, categoryPath } from '../utils/site'
 
 interface ProductSchemaProps {
   product: Product
@@ -62,14 +62,23 @@ export default function ProductSchema({ product }: ProductSchemaProps) {
     }
   }
 
+  // Home › Shop › Category › Product, skipping the category if it's missing.
+  const crumbs: { name: string; item: string }[] = [
+    { name: 'Home', item: `${SITE_ORIGIN}/home` },
+    { name: 'Shop', item: `${SITE_ORIGIN}/` },
+  ]
+  if (product.category?.slug && product.category.title) {
+    crumbs.push({
+      name: product.category.title,
+      item: `${SITE_ORIGIN}${categoryPath(product.category.slug)}`,
+    })
+  }
+  crumbs.push({ name: product.name, item: url })
+
   const breadcrumbSchema = {
     '@context': 'https://schema.org',
     '@type': 'BreadcrumbList',
-    itemListElement: [
-      { '@type': 'ListItem', position: 1, name: 'Home', item: `${SITE_ORIGIN}/home` },
-      { '@type': 'ListItem', position: 2, name: 'Shop', item: `${SITE_ORIGIN}/` },
-      { '@type': 'ListItem', position: 3, name: product.name, item: url },
-    ],
+    itemListElement: crumbs.map((c, i) => ({ '@type': 'ListItem', position: i + 1, ...c })),
   }
 
   return (

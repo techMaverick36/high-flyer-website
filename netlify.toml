@@ -1,3 +1,19 @@
+# Old category links (/shop?category=x) were linked site-wide; send them to
+# the category's own page with a real 301 so Google carries the signals over.
+# These must stay above the SPA catch-all.
+[[redirects]]
+  from = "/shop"
+  query = {category = ":category"}
+  to = "/category/:category"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/shop"
+  to = "/"
+  status = 301
+  force = true
+
 [[redirects]]
   from = "/*"
   to = "/index.html"

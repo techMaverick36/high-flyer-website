@@ -2,7 +2,7 @@ import type { Plugin } from 'vite'
 import { createClient } from '@sanity/client'
 import { writeFileSync } from 'fs'
 import { resolve } from 'path'
-import { SITE_ORIGIN, STATIC_ROUTES, escapeXml } from '../src/utils/site'
+import { SITE_ORIGIN, STATIC_ROUTES, categoryPath, escapeXml } from '../src/utils/site'
 
 interface Route {
   path: string
@@ -30,22 +30,43 @@ export function sitemapPlugin(): Plugin {
         useCdn: true,
       })
 
+      // A blank slug would emit a bare /product/ or /category/ URL that 404s.
+      const cleanSlugs = (slugs: unknown[]): string[] =>
+        slugs
+          .filter((slug): slug is string => typeof slug === 'string' && slug.trim() !== '')
+          .map((slug) => slug.trim())
+
       let productRoutes: Route[] = []
+      let categoryRoutes: Route[] = []
       try {
-        const slugs: string[] = await client.fetch(
-          `*[_type == "product" && defined(slug.current)][].slug.current`
+        // Empty categories are noindexed on the site, so they're left out here.
+        const { products, categories } = await client.fetch<{
+          products: unknown[]
+          categories: unknown[]
+        }>(`{
+          "products": *[_type == "product" && defined(slug.current)][].slug.current,
+          "categories": *[_type == "category" && defined(slug.current)
+            && count(*[_type == "product" && references(^._id)]) > 0][].slug.current
+        }`)
+
+        productRoutes = cleanSlugs(products).map((slug) => ({
+          path: `/product/${slug}`,
+          priority: '0.8',
+          changefreq: 'weekly',
+        }))
+
+        // Category pages sit between the shop root and products: they are
+        // the pages meant to rank for "<appliance> in Kampala" searches.
+        categoryRoutes = cleanSlugs(categories).map((slug) => ({
+          path: categoryPath(slug),
+          priority: '0.9',
+          changefreq: 'daily',
+        }))
+
+        console.log(
+          `[sitemap] Fetched ${productRoutes.length} product and ` +
+            `${categoryRoutes.length} category slug(s) from Sanity`
         )
-
-        productRoutes = slugs
-          // A blank slug would emit a bare /product/ URL that 404s.
-          .filter((slug) => typeof slug === 'string' && slug.trim() !== '')
-          .map((slug) => ({
-            path: `/product/${slug.trim()}`,
-            priority: '0.8',
-            changefreq: 'weekly',
-          }))
-
-        console.log(`[sitemap] Fetched ${productRoutes.length} product slug(s) from Sanity`)
       } catch (err) {
         const message = err instanceof Error ? err.message : String(err)
         if (!ALLOW_SITEMAP_WITHOUT_PRODUCTS) {
@@ -67,7 +88,7 @@ export function sitemapPlugin(): Plugin {
       }
 
       const today = new Date().toISOString().split('T')[0]
-      const allRoutes: Route[] = [...STATIC_ROUTES, ...productRoutes]
+      const allRoutes: Route[] = [...STATIC_ROUTES, ...categoryRoutes, ...productRoutes]
 
       // Duplicate <loc> values are a validation error; keep the first of each.
       const seen = new Set<string>()

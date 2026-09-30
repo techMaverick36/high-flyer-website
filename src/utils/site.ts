@@ -14,7 +14,8 @@ export const SITE_ORIGIN = 'https://highflyertadingltd.com'
  * Routes that exist as real pages, in the order they matter for crawling.
  * Must stay in sync with the <Routes> in src/App.tsx.
  *
- * `/cart` is deliberately excluded — robots.txt disallows it.
+ * `/cart` is deliberately excluded — robots.txt disallows it. Category and
+ * product pages are added by the sitemap plugin from Sanity.
  */
 export const STATIC_ROUTES: {
   path: string
@@ -27,6 +28,9 @@ export const STATIC_ROUTES: {
   { path: '/about', priority: '0.7', changefreq: 'monthly' },
   { path: '/contact', priority: '0.6', changefreq: 'monthly' },
 ]
+
+/** Path of a category landing page. Links, schema and the sitemap all use it. */
+export const categoryPath = (slug: string): string => `/category/${slug}`
 
 /** Escapes the five characters that are not legal raw inside XML text. */
 export const escapeXml = (value: string): string =>

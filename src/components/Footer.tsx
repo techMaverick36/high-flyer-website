@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { Phone, Mail, MapPin, Loader2 } from "lucide-react";
 import { companyInfo } from "../utils/company";
 import { useGetAllCategoriesQuery } from "../store/api/sanityApi";
+import { categoryPath } from "../utils/site";
 
 export default function Footer() {
 	const year = new Date().getFullYear();
@@ -68,7 +69,7 @@ export default function Footer() {
 						</h4>
 						<ul className="space-y-4">
 							{[
-								{ label: "Home", path: "/" },
+								{ label: "Home", path: "/home" },
 								{ label: "Shop All Products", path: "/" },
 								{ label: "About Us", path: "/about" },
 								{ label: "Contact Us", path: "/contact" },
@@ -99,10 +100,11 @@ export default function Footer() {
 									Loading...
 								</li>
 							) : (
-								categories.slice(0, 6).map((cat) => (
+								// Empty categories are noindexed dead ends; don't link them.
+								categories.filter((cat) => (cat.count ?? 0) > 0).slice(0, 6).map((cat) => (
 									<li key={cat.id}>
 										<Link
-											to={`/shop?category=${cat.id}`}
+											to={categoryPath(cat.id)}
 											className="text-sm hover:text-brand-teal transition-colors flex items-center group"
 										>
 											<span className="w-0 group-hover:w-2 h-px bg-brand-teal mr-0 group-hover:mr-2 transition-all"></span>
