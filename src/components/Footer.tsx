@@ -3,6 +3,7 @@ import { Phone, Mail, MapPin, Loader2 } from "lucide-react";
 import { companyInfo } from "../utils/company";
 import { useGetAllCategoriesQuery } from "../store/api/sanityApi";
 import { categoryPath } from "../utils/site";
+import { helpPages } from "../utils/policies";
 
 export default function Footer() {
 	const year = new Date().getFullYear();
@@ -73,7 +74,7 @@ export default function Footer() {
 								{ label: "Shop All Products", path: "/" },
 								{ label: "About Us", path: "/about" },
 								{ label: "Contact Us", path: "/contact" },
-								{ label: "Cart", path: "/cart" },
+								...helpPages,
 							].map((link) => (
 								<li key={link.path}>
 									<Link
@@ -171,16 +172,20 @@ export default function Footer() {
 						© {year} High Flyer Trading CO LTD. All rights reserved.
 					</p>
 					<div className="flex gap-8">
-						{["Privacy Policy", "Terms of Service", "Refund Policy"].map(
-							(item) => (
-								<span
-									key={item}
-									className="text-xs text-slate-400 hover:text-teal-300 cursor-pointer transition-colors font-medium"
-								>
-									{item}
-								</span>
-							),
-						)}
+						{["Privacy Policy", "Terms of Service"].map((item) => (
+							<span
+								key={item}
+								className="text-xs text-slate-400 hover:text-teal-300 cursor-pointer transition-colors font-medium"
+							>
+								{item}
+							</span>
+						))}
+						<Link
+							to="/returns"
+							className="text-xs text-slate-400 hover:text-teal-300 transition-colors font-medium"
+						>
+							Refund Policy
+						</Link>
 					</div>
 				</div>
 			</div>

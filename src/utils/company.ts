@@ -81,7 +81,7 @@ export const companyInfo = {
 		{
 			title: "Delivery & Installation",
 			description:
-				"We deliver across Kampala and offer professional installation services so your appliance is ready to use from day one.",
+				"We deliver across Uganda and East Africa and offer professional installation services so your appliance is ready to use from day one.",
 		},
 		{
 			title: "Expert Advice",

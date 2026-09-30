@@ -10,6 +10,9 @@ import ProductDetailPage from './Pages/ProductDetailPage'
 import CartPage from './Pages/CartPage'
 import AboutPage from './Pages/AboutPage'
 import ContactPage from './Pages/ContactPage'
+import DeliveryPage from './Pages/DeliveryPage'
+import ReturnsPage from './Pages/ReturnsPage'
+import FaqPage from './Pages/FaqPage'
 import NotFoundPage from './Pages/NotFound'
 import SiteSuspended from './Pages/SiteSuspended'
 import { siteStatus } from './utils/siteStatus'
@@ -46,6 +49,9 @@ function Layout() {
           <Route path="/cart" element={<CartPage />} />
           <Route path="/about" element={<AboutPage />} />
           <Route path="/contact" element={<ContactPage />} />
+          <Route path="/delivery" element={<DeliveryPage />} />
+          <Route path="/returns" element={<ReturnsPage />} />
+          <Route path="/faq" element={<FaqPage />} />
           <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </main>

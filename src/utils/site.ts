@@ -27,6 +27,9 @@ export const STATIC_ROUTES: {
   { path: '/home', priority: '0.8', changefreq: 'weekly' },
   { path: '/about', priority: '0.7', changefreq: 'monthly' },
   { path: '/contact', priority: '0.6', changefreq: 'monthly' },
+  { path: '/faq', priority: '0.6', changefreq: 'monthly' },
+  { path: '/delivery', priority: '0.5', changefreq: 'monthly' },
+  { path: '/returns', priority: '0.5', changefreq: 'monthly' },
 ]
 
 /** Path of a category landing page. Links, schema and the sitemap all use it. */

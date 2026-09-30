@@ -25,6 +25,7 @@ import ProductCard from "../components/ProductCard";
 import SEO from "../components/SEO";
 import ProductSchema from "../components/ProductSchema";
 import { categoryPath } from "../utils/site";
+import { policies } from "../utils/policies";
 import clsx from "clsx";
 
 export default function ProductDetailPage() {
@@ -356,7 +357,7 @@ export default function ProductDetailPage() {
 										text: "Visit Our Showroom",
 										title: "Location",
 									},
-									{ icon: Truck, text: "Express Delivery", title: "Shipping" },
+									{ icon: Truck, text: "Delivery across East Africa", title: "Shipping" },
 									{ icon: Phone, text: companyInfo.phone, title: "Support" },
 								].map((item) => (
 									<div key={item.title} className="flex items-center gap-4">
@@ -374,6 +375,16 @@ export default function ProductDetailPage() {
 									</div>
 								))}
 							</div>
+							<p className="mt-6 pt-5 border-t border-teal-100/70 text-sm text-slate-600">
+								Cash on delivery available · {policies.returns.days}-day returns ·{" "}
+								<Link to="/delivery" className="font-semibold text-brand-teal hover:underline">
+									Delivery & payment
+								</Link>{" "}
+								·{" "}
+								<Link to="/returns" className="font-semibold text-brand-teal hover:underline">
+									Returns & warranty
+								</Link>
+							</p>
 						</div>
 					</div>
 				</div>
