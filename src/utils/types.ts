@@ -27,6 +27,9 @@ export interface Product {
   rating: number
   reviewCount: number
   tags: string[]
+  brand?: string
+  /** Manufacturer model number, e.g. "GT-555" */
+  model?: string
   createdAt: string
 }
 

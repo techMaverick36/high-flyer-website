@@ -18,6 +18,8 @@ const PRODUCT_PROJECTION = `
   featured,
   inStock,
   tags,
+  brand,
+  model,
   rating,
   reviewCount,
   "images": images[]{ "url": asset->url, alt, "lqip": asset->metadata.lqip }

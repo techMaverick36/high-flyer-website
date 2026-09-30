@@ -1,6 +1,7 @@
 import { Helmet } from 'react-helmet-async'
 import type { Product } from '../utils/types'
 import { SITE_ORIGIN, categoryPath } from '../utils/site'
+import { policies } from '../utils/policies'
 
 interface ProductSchemaProps {
   product: Product
@@ -34,6 +35,12 @@ export default function ProductSchema({ product }: ProductSchemaProps) {
     ...(product.category?.title && {
       category: product.category.title,
     }),
+    // Brand and model number are Google's "global identifiers" — only
+    // emitted when entered in Sanity, never guessed from the product name.
+    ...(product.brand?.trim() && {
+      brand: { '@type': 'Brand', name: product.brand.trim() },
+    }),
+    ...(product.model?.trim() && { mpn: product.model.trim() }),
     offers: {
       '@type': 'Offer',
       url,
@@ -47,6 +54,18 @@ export default function ProductSchema({ product }: ProductSchemaProps) {
         '@type': 'Organization',
         name: 'High Flyer Trading CO LTD',
       },
+      hasMerchantReturnPolicy: {
+        '@type': 'MerchantReturnPolicy',
+        applicableCountry: policies.returns.countries,
+        returnPolicyCategory: 'https://schema.org/MerchantReturnFiniteReturnWindow',
+        merchantReturnDays: policies.returns.days,
+        // Only unused items in original packaging are accepted back.
+        itemCondition: 'https://schema.org/NewCondition',
+        refundType: ['https://schema.org/FullRefund', 'https://schema.org/ExchangeRefund'],
+      },
+      // No shippingDetails: fees are quoted per order, and Google's
+      // shippingRate needs a fixed amount — a made-up rate would be worse
+      // than the "missing field" suggestion.
     },
   }
 

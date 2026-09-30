@@ -11,6 +11,10 @@ export const policies = {
   },
   returns: {
     days: 7,
+    /** ISO country codes the return policy applies to, for Google's
+     *  MerchantReturnPolicy markup. Add others (e.g. 'KE', 'TZ', 'RW')
+     *  if the same policy applies to customers there. */
+    countries: ['UG'],
     conditions: ['The item is unused', 'It is returned in its original packaging'],
   },
   payment: {
