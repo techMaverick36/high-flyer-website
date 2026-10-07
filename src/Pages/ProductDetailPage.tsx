@@ -26,6 +26,7 @@ import SEO from "../components/SEO";
 import ProductSchema from "../components/ProductSchema";
 import { categoryPath } from "../utils/site";
 import { policies } from "../utils/policies";
+import { sanityImg, sanitySrcSet } from "../utils/image";
 import clsx from "clsx";
 
 export default function ProductDetailPage() {
@@ -82,13 +83,18 @@ export default function ProductDetailPage() {
 	return (
 		<div className="pt-28 min-h-screen bg-background">
 			<SEO
-				title={product.name}
+				// "<product> price in Uganda" is how shoppers here search for appliances.
+				title={`${product.name} Price in Uganda`}
 				path={`/product/${product.slug}`}
-				description={
-					product.shortDescription ||
-					`Buy the ${product.name} at High Flyer Trading CO LTD. ${product.warranty ? `Comes with ${product.warranty}.` : ""} Visit our showroom in Kampala or order via WhatsApp.`
-				}
-				image={product.images[0]?.url}
+				// Price and location first: Google cuts descriptions at ~155 chars.
+				description={[
+					`Buy the ${product.name} for ${formatPrice(product.price)} in Kampala, Uganda.`,
+					product.shortDescription,
+					"Cash on delivery, delivery across East Africa.",
+				]
+					.filter(Boolean)
+					.join(" ")}
+				image={sanityImg(product.images[0]?.url, 1200)}
 				type="product"
 			/>
 			<ProductSchema product={product} />
@@ -133,7 +139,11 @@ export default function ProductDetailPage() {
 						{/* Main image */}
 						<div className="aspect-square rounded-4xl overflow-hidden bg-white border border-slate-100 shadow-card group">
 							<img
-								src={product.images[selectedImage]?.url}
+								src={sanityImg(product.images[selectedImage]?.url, 800)}
+								srcSet={sanitySrcSet(product.images[selectedImage]?.url, [480, 800, 1200])}
+								sizes="(min-width: 1024px) 50vw, 100vw"
+								// The main photo is the page's largest element (LCP).
+								fetchPriority="high"
 								alt={product.images[selectedImage]?.alt || product.name}
 								className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
 							/>
@@ -154,7 +164,9 @@ export default function ProductDetailPage() {
 										)}
 									>
 										<img
-											src={img.url}
+											src={sanityImg(img.url, 200)}
+											loading="lazy"
+											decoding="async"
 											alt={img.alt || ""}
 											className="w-full h-full object-cover rounded-xl"
 										/>

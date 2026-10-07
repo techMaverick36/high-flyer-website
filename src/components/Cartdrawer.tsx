@@ -4,6 +4,7 @@ import { useCartStore } from '../store/Cartstore'
 import { formatPrice, openWhatsAppOrder, openEmailOrder } from '../utils'
 import type { CustomerInfo } from '../utils/types'
 import clsx from 'clsx'
+import { sanityImg } from '../utils/image'
 
 const defaultCustomer: CustomerInfo = {
   name: '',
@@ -32,7 +33,8 @@ export default function CartDrawer() {
 
   const getImageSrc = (item: (typeof items)[number]) => {
     const image = item.product.images?.[0]
-    return typeof image === 'string' ? image : image?.url
+    // Shown at ~128px at most; ask Sanity for a small copy.
+    return sanityImg(typeof image === 'string' ? image : image?.url, 256)
   }
 
   const getImageAlt = (item: (typeof items)[number]) => {

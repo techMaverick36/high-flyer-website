@@ -17,6 +17,7 @@ import SEO from '../components/SEO'
 import CategorySchema from '../components/CategorySchema'
 import NotFoundPage from './NotFound'
 import { categoryPath } from '../utils/site'
+import { sanityImg } from '../utils/image'
 import clsx from 'clsx'
 
 const sortOptions: { value: SortOption; label: string }[] = [
@@ -212,7 +213,7 @@ export default function ShopPage() {
         >
           <span className="w-8 h-8 rounded-md overflow-hidden shrink-0 border border-slate-100 bg-slate-50">
             {cat.image ? (
-              <img src={cat.image} alt="" className="w-full h-full object-cover" />
+              <img src={sanityImg(cat.image, 96)} alt="" loading="lazy" className="w-full h-full object-cover" />
             ) : (
               <span className="w-full h-full flex items-center justify-center text-[10px] font-semibold text-slate-400">
                 {cat.label.charAt(0)}
@@ -259,9 +260,9 @@ export default function ShopPage() {
         </>
       ) : (
         <SEO
-          title="Shop All Appliances"
+          title="Home Appliances in Kampala, Uganda"
           path="/"
-          description="Browse our full range of genuine home appliances in Kampala — refrigerators, TVs, washing machines, cookers, air fryers and more. All products carry manufacturer warranty."
+          description="Shop genuine home appliances in Uganda — TVs, washing machines, blenders, air fryers and sound systems from Hisense, Midea, TCL and Philips. Cash on delivery."
         />
       )}
 
@@ -526,7 +527,7 @@ export default function ShopPage() {
         )}
         <div className="flex items-baseline justify-between gap-4 mb-5">
           <h1 className="font-display font-bold text-xl md:text-2xl text-slate-900">
-            {activeCategory === 'all' ? 'All Appliances' : activeCategoryLabel}
+            {activeCategory === 'all' ? 'Home Appliances in Uganda' : activeCategoryLabel}
           </h1>
           {!loading && (
             <p className="text-sm text-slate-500 tabular-nums">

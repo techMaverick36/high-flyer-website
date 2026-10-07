@@ -82,7 +82,7 @@ export default function HeroSection() {
           <h1 className="font-display font-bold text-white leading-[1.05] mb-5 text-5xl md:text-6xl lg:text-7xl">
             <span className="block">Premium Home</span>
             <span className="block text-brand-teal">Appliances</span>
-     
+            <span className="block text-white/90 text-3xl md:text-4xl lg:text-5xl mt-2">in Kampala, Uganda</span>
           </h1>
 
           <p className="text-white/85 text-lg md:text-xl leading-[1.7] mb-8 max-w-xl">

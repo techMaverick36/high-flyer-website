@@ -4,6 +4,7 @@ import { ShoppingCart, Eye, Star, Check, Home } from 'lucide-react'
 import type { Product } from '../utils/types'
 import { useCartStore } from '../store/Cartstore'
 import { formatPrice, getDiscountPercent } from '../utils'
+import { sanityImg, sanitySrcSet } from '../utils/image'
 import clsx from 'clsx'
 
 interface ProductCardProps {
@@ -35,7 +36,10 @@ export default function ProductCard({ product, className }: ProductCardProps) {
       <Link to={`/product/${product.slug}`} className="block relative aspect-square overflow-hidden bg-slate-50">
         {!imgError ? (
           <img
-            src={product.images[0]?.url}
+            src={sanityImg(product.images[0]?.url, 480)}
+            srcSet={sanitySrcSet(product.images[0]?.url, [320, 480, 640])}
+            // 2 columns on phones, 3 on tablets, 4 on desktop.
+            sizes="(min-width: 1280px) 25vw, (min-width: 768px) 33vw, 50vw"
             alt={product.images[0]?.alt || product.name}
             // 24 cards render per batch; without these the browser fetches
             // every image up front and LCP suffers badly on the grid.

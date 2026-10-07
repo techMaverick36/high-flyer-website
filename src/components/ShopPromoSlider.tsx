@@ -10,6 +10,7 @@ import {
   Star,
   Home,
 } from 'lucide-react'
+import { sanityImg, sanitySrcSet } from '../utils/image'
 import type { Product } from '../utils/types'
 import { formatPrice, getDiscountPercent } from '../utils'
 import { useCartStore } from '../store/Cartstore'
@@ -160,7 +161,9 @@ export default function ShopPromoSlider({ products, isLoading }: ShopPromoSlider
         >
           {image?.url ? (
             <img
-              src={image.url}
+              src={sanityImg(image.url, 600)}
+              srcSet={sanitySrcSet(image.url, [400, 600, 800])}
+              sizes="(min-width: 768px) 340px, 90vw"
               alt={image.alt || product.name}
               // object-contain + padding keeps the appliance whole and
               // correctly proportioned whatever the source crop is.

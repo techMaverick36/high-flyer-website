@@ -4,6 +4,7 @@ import { useEffect } from 'react'
 import Header from './components/Header'
 import Footer from './components/Footer'
 import CartDrawer from './components/Cartdrawer'
+import FloatingWhatsApp from './components/FloatingWhatsApp'
 import HomePage from './Pages/HomePage'
 import ShopPage from './Pages/ShopPage'
 import ProductDetailPage from './Pages/ProductDetailPage'
@@ -56,6 +57,7 @@ function Layout() {
         </Routes>
       </main>
       <Footer />
+      <FloatingWhatsApp />
     </>
   )
 }

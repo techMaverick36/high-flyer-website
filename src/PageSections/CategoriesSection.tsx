@@ -3,6 +3,7 @@ import { ArrowRight, Loader2 } from 'lucide-react'
 import { useGetAllCategoriesQuery } from '../store/api/sanityApi'
 import Section, { SectionHeader } from '../components/Section'
 import { categoryPath } from '../utils/site'
+import { sanityImg, sanitySrcSet } from '../utils/image'
 
 export default function CategoriesSection() {
   const { data: categories = [], isLoading: loading } = useGetAllCategoriesQuery()
@@ -36,7 +37,11 @@ export default function CategoriesSection() {
               <div className="w-full aspect-[4/3] relative overflow-hidden bg-slate-100">
                 {cat.image ? (
                   <img
-                    src={cat.image}
+                    src={sanityImg(cat.image, 600)}
+                    srcSet={sanitySrcSet(cat.image, [400, 600, 800])}
+                    sizes="(min-width: 1024px) 25vw, (min-width: 768px) 50vw, 100vw"
+                    loading="lazy"
+                    decoding="async"
                     alt={cat.label}
                     className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                   />
